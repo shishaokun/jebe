@@ -283,7 +283,7 @@ JebeManager.define(function (opt) {
                 else {
                     self.load('refresh_idx='+self.refreshCount);
                 }
-            }, parseFloat(window[NS+'_json'].udpate_interval) * 100);
+            }, parseFloat(window[NS+'_json'].udpate_interval) * 1000);
         },
 
         load: function (data) {
