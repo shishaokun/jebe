@@ -214,7 +214,7 @@ JebeManager.define(function (opt) {
         },
 
         render: function (tmpl) {//console.log(tmpl)
-            var i, j, adzone, html, rr = +new Date();
+            var i, j, adzone, html, script, rr = +new Date();
             for (i = 0 ; i < tmpl.length ; i += 1) {
                 adzone = $('#'+this.adzonePrex + tmpl[i].adzone_id)[0];
                 html = '';
@@ -223,14 +223,20 @@ JebeManager.define(function (opt) {
                     html += '<a data-index="'+i+'" class="jebe-refresh" href="#">refresh</a>'+tmpl[i].html.replace(new RegExp(tmpl[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
                 }
                 adzone.innerHTML = html;
-                this.jsRepo[tmpl[i].adzone_id] = eval('(function(){'+tmpl[i].js+';return init;})()');
+                script = document.createElement('script');
+                try {
+                    script.appendChild(document.createTextNode('(function(){'+tmpl[i].js+';JebeManager.jsRepo['+tmpl[i].adzone_id+'] = init;})()'));
+                }
+                catch (e) {
+                    script.text = '(function(){'+tmpl[i].js+';JebeManager.jsRepo['+tmpl[i].adzone_id+'] = init;})()';
+                }
+                adzone.appendChild(script);
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
-                    try {
-                        this.jsRepo[tmpl[i].adzone_id](eval("("+this.templateData[i].ads[j].widget+")"),this.templateData[i].ads[j].ad_param, this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id));
-                    }
-                    catch (e) {
-                        //console.error(e.toString());
-                    }
+                    (function (init, args) {
+                        setTimeout(function () {
+                            init.apply(window, args);
+                        }, 0);
+                    })(JebeManager.jsRepo[tmpl[i].adzone_id], [eval("("+this.templateData[i].ads[j].widget+")"),this.templateData[i].ads[j].ad_param, this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id)]);
                 }
                 $('.jebe-refresh', adzone)[0].onclick = this.refresh;
             }
@@ -298,6 +304,8 @@ JebeManager.define(function (opt) {
         }
 
     });
+
+    JebeManager.jsRepo = {};
 
     return new JebeLoader(opt.src);
 
