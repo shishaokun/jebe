@@ -213,7 +213,7 @@ JebeManager.define(function (opt) {
             });
         },
 
-        render: function (tmpl) {console.log(tmpl)
+        render: function (tmpl) {//console.log(tmpl)
             var i, j, adzone, html, rr = +new Date();
             for (i = 0 ; i < tmpl.length ; i += 1) {
                 adzone = $('#'+this.adzonePrex + tmpl[i].adzone_id)[0];
@@ -227,7 +227,10 @@ JebeManager.define(function (opt) {
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
                     try {
                         this.jsRepo[tmpl[i].adzone_id](eval("("+this.templateData[i].ads[j].widget+")"),this.templateData[i].ads[j].ad_param, this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id));
-                    } catch (e) {console.error(e.toString())}
+                    }
+                    catch (e) {
+                        //console.error(e.toString());
+                    }
                 }
                 $('.jebe-refresh', adzone)[0].onclick = this.refresh;
             }
@@ -251,7 +254,7 @@ JebeManager.define(function (opt) {
     var JebeLoader = Class({
 
         init: function (src) {
-            console.log(window[NS+'_json'])
+            //console.log(window[NS+'_json'])
 
             var self = this;
 
