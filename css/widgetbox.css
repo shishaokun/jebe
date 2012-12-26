@@ -1,0 +1,892 @@
+.jebe-adzone .jebe-next {
+    background: url("http://jebe.xnimg.cn/default/newpager.png") 0px -18px no-repeat;
+    text-indent: -99999px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 25px;
+    height: 18px;
+    display: block;
+}
+.jebe-adzone .jebe-next:hover {
+    background-position: 0px -90px;
+}
+
+/** sponsorsWidget by yang.zhao **/
+.Widget .side-item {border-top:1px solid #CEE1EE;padding-top:10px;}
+.Widget .share-sidebar .side-item-body{padding:0 0 10px;}
+.Widget .side-item-header {padding:0 0 8px;text-align:right;margin:0;position: relative;} 
+.Widget .side-item-header h4 {float:left;color:#333;font-weight:bold;}
+.Widget .side-item-header h4 .title{display:inline-block;width:180px;}
+.Widget .side-item-header h4 .long_title{display:inline-block;width:100%;text-align:left;}
+.Widget .side-item-header h4 span {font-weight:normal;} 
+.Widget .side-item-body {padding:0 0 10px;} 
+.Widget .side-item-body .from-sponsor {color:#AAA;} 
+.Widget .side-item-body .btnspace{margin:10px 0 15px;float:right;}
+.side-item .info p{word-wrap:break-word;word-break:break-all;overflow:hidden;}
+.side-item-body .fans{margin-bottom:5px;line-height:18px;word-break:break-all;word-wrap:break-word;margin-top:0px;}
+.side-item-body .fansapp{margin-bottom:5px;line-height:18px;word-break:break-all;word-wrap:break-word;margin-top:0px;height:78px;}
+
+.side-item-body .infoapp{margin-bottom:5px;line-height:18px;word-break:break-all;word-wrap:break-word;margin-top:0px;height:83px;}
+
+.side-item .footer a {text-decoration:none;outline:none;blr:expression(this.onFocus=this.blur());}
+.template .side-item-body p,
+.imgtemplate .side-item-body p,
+.sponsors .side-item-body p,
+.wide-sponsors .side-item-body p,
+.commend-page .side-item-body p,
+.selected .side-item-body p {margin-bottom:0.5ex;}
+.template .figure,
+.selected .figure,
+.commend-page .figure,
+.sponsors .figure { float: left;margin-bottom:10px;}
+.wide-sponsors .figure { float: left;margin-bottom:10px;}
+.template .info {margin-left:73px;color: #333;margin-bottom:10px;}
+.sponsors .info {float:left;width:120px;color: #333;font-size:12px;height:83px;}
+.wide-sponsors .info {margin-left:108px;color: #333;}
+.sponsors .side-item-header a, .wide-sponsors .side-item-header a{outline:none;blr:expression(this.onFocus=this.blur());}
+
+
+.commend-page .info {margin-left:85px;color: #333;}
+.template .footer,
+.sponsors .footer {clear: both;}
+.wide-sponsors .footer {clear: both;}
+.template .footer a img,
+.sponsors .footer a img,
+.wide-sponsors .footer a{text-decoration:none;outline:none;blr:expression(this.onFocus=this.blur());}
+.wide-sponsors .footer a img{zoom:1;}/*fix by emil 去掉了ie下的relative*/
+
+.template .info ul li a{display:inline-block;}
+
+.sponsors .figure,
+.figure {
+	position: relative;
+	*zoom:1;
+}
+.sponsors .figure{ margin-right:8px;position:inherit; }
+.template .play,
+.sponsors .play,
+.wide-sponsors .play {
+	position: absolute;
+	text-indent: -9999px;
+	display:block;
+	top: 0;
+	left: 0;
+	width: 100px;
+	height: 80px;
+	outline: 0;
+	background: url(http://jebe.xnimg.cn/default/img/play2_1.gif) no-repeat center center;
+	opacity: 0.9;
+	*filter: alpha(opacity=90);
+}
+.template .play:hover,
+.sponsors .play:hover,
+.wide-sponsors .play:hover {
+    background: url(http://jebe.xnimg.cn/default/img/play2_2.gif) no-repeat center center;
+}
+.template .play {
+	width: 64px;
+	height: 64px;
+	background: url(http://jebe.xnimg.cn/default/img/play_a.png) no-repeat center center;
+}
+.template .play:hover {
+	background: url(http://jebe.xnimg.cn/default/img/play_b.png) no-repeat center center;
+}
+.sponsors .play:hover {
+	background-image: url(http://jebe.xnimg.cn/default/img/play21.gif);
+}
+.wide-sponsors .play {
+	width: 220px;
+	height: 120px;
+	/*background: url(http://jebe.xnimg.cn/default/img/play1_1.gif) no-repeat 85px 45px;*/
+}
+.wide-sponsors .play:hover {
+   /*background-position: 85px -55px;*/
+}
+#sponsorsWidget a.link img{
+	zoom:1;
+	*position:relative;
+}
+a.text {color:#333;text-decoration:none;}
+a.text:hover {color:#333;text-decoration:none;}
+
+#send-gift-form {
+	padding-left: 20px;
+	background: url(http://jebe.xnimg.cn/default/img/gift.gif) no-repeat left 3px;
+	margin-bottom: 10px;
+}
+#send-gift-form p.submit {text-align: right;}
+#send-gift-form .input-text, #send-gift-form textarea {width:190px;}
+.sent-gift:after {
+	content: '.';
+	display: block;
+	clear: both;
+	height: 0;
+	visibility: hidden;
+}
+.sent-gift {
+	background-color: #F0F5F8;
+	padding: 5px;
+	margin-bottom: 5px;
+	*zoom: 1;
+}
+.sent-gift .avatar {
+	float: left;
+	margin-right: 5px;
+}
+.sent-gift .gift {
+	float: right;
+}
+.sent-gift p {
+	word-wrap: break-word;
+}
+
+.wide-sponsors .footer .link:hover, .sponsors .footer .link:hover{
+    text-decoration:underline;
+}
+
+/*视频*/
+#sponsorsAdFlash {
+	float: left;
+}
+#sponsorsComments {
+	float: right;
+	width: 350px;
+	height: 360px;
+	background-color: #FFF;
+}
+#sponsorsComments .diggs {
+	padding: 5px 10px 0;
+	margin-bottom: 1px;
+	background-color: #F0F5F8;
+	border-bottom: 1px solid #F0F5F8;
+}
+#sponsorsComments .diggers:after {
+	content: '\20';
+	display: block;
+	clear: both;
+}
+#sponsorsComments .diggs p {
+	margin-bottom: 5px;
+}
+#sponsorsComments .diggers {
+	*zoom: 1;
+	margin-left: 20px;
+}
+#sponsorsComments .diggers li {
+	float: left;
+	margin-right: 10px;
+	text-align: center;
+	width: 50px;
+	height: 69px;
+	overflow: hidden;
+}
+#sponsorsComments .diggers li .name {
+	*margin-top: 5px;
+}
+#sponsorsComments .publisher {
+	height: 59px;
+	padding: 10px 15px;
+	margin:0;
+	margin-bottom: 1px;
+	background-color: #F0F5F8;
+	border-bottom: 1px solid #F0F5F8;
+	*zoom: 1;
+	*overflow: hidden;
+}
+#sponsorsComments .publisher:after {
+	content: '\20';
+	display: block;
+	clear: both;
+}
+#sponsorsComments .publisher .figure {
+	float: left;
+	margin-right: 5px;
+	_display: inline;
+}
+#sponsorsComments .publisher .section {
+	float: left;
+}
+#sponsorsComments .publisher textarea {
+	height: 22px;
+	width: 276px;
+	margin-top: 0;
+	margin-bottom: 5px;
+	resize: none;
+}
+#sponsorsComments .publisher .text-count {
+	float: right;
+	color: #AAA;
+}
+#sponsorsComments .comments {
+	height: 227px;
+	overflow: auto;
+	word-wrap: break-word;
+	background: #FFF url(http://a.xnimg.cn/imgpro/homeAd/ex/renren-bg.png) no-repeat center top;
+	border-bottom: 1px solid #C2D8E7;
+}
+#sponsorsComments.diggers-showed .comments {
+	height: 158px;
+}
+#sponsorsComments .more-comments {
+	height: 24px;
+	line-height: 24px;
+	padding-right: 20px;
+	background-color: #F0F5F8;
+	text-align: right;
+	_height: 22px;
+	_overflow: hidden;
+}
+#sponsorsComments .more-comments a {
+	line-height: 24px;
+}
+#sponsorsComments .more-comments .count {
+	float: left;
+	margin-left: 10px;
+	color: #888;
+}
+#sponsorsComments .comment {
+	padding: 5px 10px;
+	background-color: #F0F5F8;
+	border-bottom: 2px solid #FFF;
+}
+#sponsorsComments .comment .figure {
+	float: left;
+	margin-right: 5px;
+	_display: inline;
+}
+#sponsorsComments .comment .section p {
+	line-height: 15px;
+}
+#sponsorsComments .comment .x-to-hide {
+	float: right;
+	text-indent: -9999px;
+	outline: 0;
+}
+#sponsorsComments .comment .reply {
+	margin-left: 10px;
+}
+
+
+.sw_mobile_num_input{vertical-align:middle;height:15px;padding:2px;width:120px;color:#aaaaaa;}
+.sw_button_img{vertical-align:middle;margin-right:5px;}
+.ad_btn{position:absolute;bottom:0;left:0;z-index:1;text-align:left;padding:5px 0 7px 10px;}
+.btn_bg{position:absolute;bottom:0;left:0;width:100%;}
+
+.btn_bg1{position:absolute;bottom:0;left:0;width:100%;}
+
+.btn_bg_gray{background:#000;filter:Alpha(Opacity=50);opacity:0.50;}
+.ad_btn a{border:1px solid #8B8B8B;display:inline-block;height:21px;1margin-left:10px;vertical-align:top;width:86px;margin-bottom:2px;margin-top:5px;margin-left:1px;}
+.ad_btn a:hover{border:1px solid #333;border-bottom:3px solid #333;margin-bottom:0;margin-top:5px;}
+#aShare {width:54px;}
+.ad_join_btn{background:url(http://jebe.xnimg.cn/default/img/i-want-join-button.png) -1px -1px  no-repeat;}
+
+.ad_buy_btn{background:url(http://jebe.xnimg.cn/20100624/1755/a_main_L3gO_57_040250.png) -1px -1px  no-repeat;}
+.ad_download_btn{background:url(http://jebe.xnimg.cn/20100305/2006/a_main_hatH_ac_073157.png) -1px -1px  no-repeat;}
+.ad_share_btn{background:url(http://jebe.xnimg.cn/default/img/sw_share_button.png) -1px -1px  no-repeat;}
+.ad_like_btn{background:url(http://jebe.xnimg.cn/default/follow-button1.gif) -1px -1px  no-repeat;}
+.sw_operate_area{margin-bottom:5px;}
+.home .side-item .sw_mobile_backinfo li{background-color:#f3faff;padding:5px 3px 5px 5px;margin-bottom:1px;}
+.sw_mobile_backinfo li .img{display:block;float:left;}
+.sw_mobile_backinfo li .info_area{display:block;float:left;padding-left:5px;}
+.sw_block {display:block;}
+.sw_mobile_backinfo li .info_area span {color:#888888;}
+.sw_mobile_backinfo li .info_area span span{font-weight:700;color:#333333;}
+.sw_vote_title{font-weight:700;margin-bottom:10px;}
+.sw_vote_icon{background:url(http://jebe.xnimg.cn/default/img/someicons.gif) 0 1px no-repeat;vertical-align:middle;}
+.sw_vote_title_text{vertical-align:middle;}
+.sw_vote_item{margin-bottom:5px;}
+.sw_vote_item input{height:16px;}
+.sw_vote_p{float:left;width:35px;display:block;}
+.sw_vote_itemtext_holder{position:relative;float:left;display:block;padding-left:10px;width:170px;height:15px;}
+.sw_vote_itemtext_holder .sw_vote_itemtext{position:absolute;left:9px;white-space:nowrap;vertical-align:middle;*top:2px;_top:0;}
+.sw_vote_more{background-color:#005eac;color:#ffffff;}
+.sw_vote_less{background-color:#cee1ee;color:#666666;}
+.sw_vote_info{margin:12px 0;color:#888888;}
+.sw_vote_item input{vertical-align:middle;font-family:tahoma,verdana,arial,STHeiTi,simsun,sans-serif;}
+.sw_vote_item label{vertical-align:middle;font-weight:normal;font-family:tahoma,verdana,arial,STHeiTi,simsun,sans-serif;}
+.sw_button_area{margin-top:12px;}
+.sw_button_area a:hover{text-decoration:none;}
+.sw-refresh-button{background:url(http://a.xnimg.cn/imgpro/icons/wbPage.gif) no-repeat 0px 0px;display:block;outline:0 none;overflow:hidden;position:absolute;right:0px;top:-3px;text-indent:-9999px;z-index:999;width:14px;height:22px;}
+.sw-refresh-button:hover{background-position: 0px -22px;}
+.sw-x-button{background:url(http://jebe.xnimg.cn/default/img/action-bottons.gif) 0 -75px no-repeat;display:none;outline:0 none;overflow:hidden;position:absolute;right:0;top:-3px;text-indent:-9999px;z-index:999;width:14px;height:22px;}
+.sw-x-button:hover{background-position: 0 -116px;}
+.sw-buttons-holder{/*position:relative;zoom:1;top:0;*/position:absolute;right:0;top:0;}
+
+
+.s4-preview-holder .side-item {border-bottom:1px solid #ffffff;margin-bottom:10px;}
+.s4-preview-holder .side-item-header {padding:0 0 8px;text-align:right;}
+.s4-preview-holder .side-item-header h4 {color:#333333;float:left;font-size:12px;text-align:left;}
+.s4-preview-holder .side-item-body {padding:0 0 7px;}
+.s4-preview-holder .sponsors .figure, .s4-preview-holder  .figure {position:relative;}
+.s4-preview-holder .template .figure, .s4-preview-holder  .sponsors .figure {float:left;margin-bottom:10px;}
+.s4-preview-holder .wide-sponsors .play {background:url("http://jebe.xnimg.cn/default/img/play1_1.gif") no-repeat scroll 85px 45px transparent;height:120px;width:220px;display:block;left:0;opacity:0.9;outline:0 none;position:absolute;text-indent:-9999px;top:0;}
+.s4-preview-holder .wide-sponsors .play:hover{background-position:85px -55px;}
+.s4-preview-holder .sponsors .info {color:#333333;margin-left:108px;}
+.s4-preview-holder .template .info {color:#333333;margin-bottom:10px;margin-left:73px;}
+.s4-preview-holder .sponsors .side-item-body p, .s4-preview-holder .wide-sponsors .side-item-body p {margin-bottom:0.5ex;}
+.s4-preview-holder a.text {color:#333333;text-decoration:none;}
+.s4-preview-holder .wide-sponsors .footer,.s4-preview-holder .sponsors .footer,.s4-preview-holder .template .footer {clear:both;}
+
+#sponsorsWidget .sw-buttons-holder {zoom:1;top:0;}
+.sw_button_area .link{outline:none;blr:expression(this.onFocus=this.blur());}
+
+/*自助广告展示*/
+.selfHelp{width:240px;}
+.selfHelp a{outline:none;blr:expression(this.onFocus=this.blur());}
+.selfHelp div{padding:10px 0;overflow:hidden;_zoom:1;}
+.selfHelp div.addedtop {background-color:#f0f5f8;border:1px solid #b8d4e8!important;padding:22px 0 22px 5px;width:213px;margin: 0 auto;}
+.selfHelp div.under .inner-under{border:none}
+.selfHelp div.under{border-bottom:1px solid #cee1ee;width:240px}
+.selfHelp div.under a.closebtn{width:14px;height:14px;position:absolute;background:url("http://a.xnimg.cn/imgpro/bg/cs_home.png") no-repeat scroll -225px -24px transparent;left:218px;top:10px;}
+.selfHelp div.under .closebtn:hover {background-position:-225px -38px}
+.selfHelp div.under .closebtn span{ display:none ;}
+.selfHelp div.inner-under .closebtn{width:14px;height:14px;position:absolute;background:url("http://a.xnimg.cn/imgpro/bg/cs_home.png") no-repeat scroll -225px -24px transparent;left:218px;top:10px;}
+.selfHelp div.inner-under .closebtn:hover {background-position:-225px -38px}
+.selfHelp div.inner-under .closebtn span{ display:none ;}
+.self-big div.under a.closebtn{width:14px;height:14px;position:absolute;background:url("http://a.xnimg.cn/imgpro/bg/cs_home.png") no-repeat scroll -225px -24px transparent;left:218px;top:10px;}
+.selfHelp div.under .closebtn:hover {background-position:-225px -38px}
+.self-big div.under .closebtn span{ display:none ;}
+.self-big div.inner-under .closebtn{width:14px;height:14px;position:absolute;background:url("http://a.xnimg.cn/imgpro/bg/cs_home.png") no-repeat scroll -225px -24px transparent;left:218px;top:10px;}
+.self-big div.inner-under .closebtn:hover {background-position:-225px -38px}
+.self-big div.inner-under .closebtn span{ display:none ;}
+
+.selfHelp .self-big h4,.selfHelp .self-text h4,.selfHelp .under h4{padding:0 0 10px 0;border:none;margin:0;font-weight: bold;}
+.selfHelp .self-big h4.commonchar,.selfHelp .self-text h4.commonchar, .selfHelp .under h4.commonchar {font-weight:normal;}
+.selfHelp .img{display:inline;width:77px;height:77px;float:left;margin-right:5px;margin-left: 10px;}
+.selfHelp img{display:block;margin:0 auto;}
+.selfHelp .rr{margin-left:80px;margin-right: 5px;padding-left:13px;word-wrap:break-word;}
+.selfHelp .rr.rrnew{margin-left:5px;margin-right: 80px;padding-left:0;}
+.selfHelp .adr{color:#5CBC5C;padding-top:5px;display:inline-block;}
+.selfHelp p a{color:#000;}
+.selfHelp p a:link,.selfHelp p a:visited,.selfHelp p a:hover,.selfHelp p a:active{color:#000;text-decoration:none;}
+.selfHelp .will{text-align:right; margin-right:10px; padding:0px 0px 10px 0px; margin-top:-2px;}
+.selfHelp .will a{color:#888;}
+
+/*自助的大图和纯文字*/
+.self-big{padding:10px 0;border-bottom:1px solid #cee1ee;width:240px;}
+/*.self-big h4{margin-bottom:9px;}*/
+/*.self-big img{width:220px;height:120px;}*/
+.self-text{padding:10px 0;border-bottom:1px solid #cee1ee;width:240px;}
+.self-text h4{}
+.self-text .txt, .self-text .txt:hover{color:#000;text-decoration:none;}
+.self-text .addr{color:#009600;}
+.self-text a:hover {text-decoration:underline;}
+.wide-sponsors,.sponsors{position:relative;}
+.wide-sponsors .side-item-body{position:relative;z-index:999;padding:0 0 7px;}
+.wide-sponsors .side-item-body{padding:0 0 7px;}
+.side-item-body .figureWide{position:absolute;top:0;right:0;z-index:999;}
+.nobtborder {border-bottom:none!important;}
+.noborder{border:none !important}
+.text-link-ad{padding:6px 0;font-weight:bold;}
+/* float */
+.loadMask{position:absolute;width:200px;height:40px;top:121px;right:0px;z-index:9999;}
+.loadMask .maskBg{width:200px;height:40px;background:#888;opacity:0.3;filter:alpha(opacity=30);position:absolute;top:3px;left:3px;z-index:1;}
+.loadMask .maskView{width:198px;height:38px;border:1px solid #888;background:#fff;z-index:100;position:absolute;left:0;top:0;line-height:38px;font-size:14px;}
+.loadMask .maskView span{margin-left:10px;}
+
+.suspendWb{position:absolute;width:297px;height:248px;top:121px;right:0px;z-index:9999;}
+.side-item-body .userPic img {vertical-align:middle;margin:0 0 4px;}
+.suspendWb .suspendBg{width:297px;height:248px;background:#888;opacity:0.3;filter:alpha(opacity=30);position:absolute;top:3px;left:3px;z-index:1;}
+.suspendWb .suspendView{width:295px;height:246px;border:1px solid #888;background:#fff;z-index:100;position:absolute;left:0;top:0;}
+.suspendWb .suspendView img{border:0;vertical-align:middle;}
+
+.loadMask-small{position:absolute;width:200px;height:40px;top:81px;right:120px;z-index:9999;}
+.loadMask-small .maskBg{width:200px;height:40px;background:#888;opacity:0.3;filter:alpha(opacity=30);position:absolute;top:3px;left:3px;z-index:1;}
+.loadMask-small .maskView{width:198px;height:38px;border:1px solid #888;background:#fff;z-index:100;position:absolute;left:0;top:0;line-height:38px;font-size:14px;}
+.loadMask-small .maskView span{margin-left:10px;}
+
+.suspendWb-small{position:absolute;width:297px;height:248px;top:81px;right:120px;z-index:9999;}
+.suspendWb-small .suspendBg{width:297px;height:248px;background:#888;opacity:0.3;filter:alpha(opacity=30);position:absolute;top:3px;left:3px;z-index:1;}
+.suspendWb-small .suspendView{width:295px;height:246px;border:1px solid #888;background:#fff;z-index:100;position:absolute;left:0;top:0;}
+.suspendWb-small .suspendView img{border:0;vertical-align:middle;}
+
+/* nuomi-ad.css 首页糯米广告  by libin*/
+.nuomi-ad .nuomi-ad-header {height:18px;padding:10px 10px 0 0;}
+.nuomi-ad a{outline:none;blr:expression(this.onFocus=this.blur());}
+.nuomi-ad h4 {float:left;width:80px;}
+.nuomi-ad h4 a:link,.nuomi-ad h4 a:visited {color:#333;}
+.nuomi-ad h4 a:hover {text-decoration:none;}
+.nuomi-ad .nuomi-city {float:right;}
+.nuomi-ad del {color:#888;text-decoration:line-through;}
+.nuomi-ad-body a.nuomi-pic {float:left;width:150px;margin:4px 0 0;}
+.nuomi-ad-body a.nuomi-title{float:left;margin:7px 0 4px;+margin-top:10px;}
+.nuomi-ad-body p {float:left;width:100%;}
+.nuomi-ad-body p a {margin-right:10px;display:inline-block;}
+.nuomi-ad-body p a:link,.nuomi-ad-body p a:visited {color:#000;}
+.nuomi-ad-body p a:hover {text-decoration:none;}
+
+.ifr-wrap{position:relative;}
+.ifr-wrap div{position:absolute;left:0;top:0;cursor:pointer;}
+
+/* hide top ad */
+.navigation .banner .float-right {overflow:visible;}
+.hideAd{display:block;padding:5px;width:12px;*padding-bottom:3px;overflow:hidden;color:#779cb7;position:absolute;bottom:0;right:-25px;background:#EEF5FB;text-decoration:none;line-height:12px;}
+.hideAd:link, .hideAd:visited{color:#779cb7;}
+.hideAd:hover{background:#cce3f1;text-decoration:none;color:#779cb7;}
+
+/* like fix */
+.praiseInfo .hasBg{display:block;padding:5px 0;background-color:#F3FAFF;}
+.link img{vertical-align:middle;}
+
+/* vote */
+.sw_backinfo .userPic img{position:relative;top:1px;}
+
+/*footer*/
+.footer a {outline:none;float: left;*padding-bottom:1px; }
+.footer a.sms-link{float:none;}
+.wide-sponsors .side-item-header,
+.sponsors .side-item-header{height:15px}
+.wide-sponsors .side-item-header,
+.sponsors .side-item-body{clear:both}
+.side-item{*zoom:1}
+.share-ads {margin:0}
+
+/* ad-110429 */
+.ad110429 .box {
+    padding: 10px;
+    background: #f0f5f8;
+    position: relative;
+    background: #f0f5f8 url(http://jebe.xnimg.cn/default/img/logo.png) no-repeat 90% 90%;
+}
+
+.ad110429 .tl, .ad110429 .tr, .ad110429 .bl, .ad110429 .br {
+    width: 4px;
+    height: 4px;
+    background: url(http://jebe.xnimg.cn/default/img/corner.png) no-repeat;
+    overflow: hidden;
+    position: absolute;
+}
+
+.ad110429 .tl {
+    background-position: 0 0;
+    left: 0;
+    top: 0;
+}
+
+.ad110429 .tr {
+    background-position: -4px 0;
+    right: 0;
+    top: 0;
+}
+
+.ad110429 .bl {
+    background-position: 0 -4px;
+    left: 0;
+    bottom: 0;
+}
+
+.ad110429 .br {
+    background-position: -4px -4px;
+    bottom: 0;
+    right: 0;
+}
+
+.ad110429 .box .icon {
+    margin-right: 8px;
+}
+
+.ad110429 .box .ql, .ad110429 .box .qr {
+    display: inline-block;
+    width: 10px;
+    height: 7px;    
+    vertical-align: top;
+    background: url(http://a.xnimg.cn/imgpro/home/home_icon.png) no-repeat;
+}
+
+.ad110429 .box .ql {
+    margin-right: 0.5ex;
+    background-position: 0 -333px;
+}
+
+.ad110429 .box .qr {
+    margin-left: 0.5ex;
+    background-position: -10px -333px;
+}
+
+.ad110429 input, .ad110429 label {
+    vertical-align: middle;
+}
+
+.ad110429 input {
+    margin-right: 3px;
+}
+
+.ad110429 label {
+    font-weight: normal;
+    line-height: normal;
+}
+
+.ad110429 li {
+    margin-top: 10px;
+}
+
+/* 56上的广告 */
+.widget-ad-for-56 {
+	overflow: hidden;
+	zoom: 1;
+	margin-bottom: 8px;
+}
+
+.widget-ad-for-56 .avatar {
+	float: left;
+}
+.widget-ad-for-56 .avatar img {
+	display: block;
+}
+.widget-ad-for-56 .detail {
+	margin-left: 80px;
+}
+.widget-ad-for-56 .detail h4 {
+	margin-bottom: 5px;
+}
+.widget-ad-for-56 #content {
+	color: #333;
+	text-decoration: none!important;
+	width: auto!important;
+}
+
+/* 刷新按钮需要的css*/
+/*.advert-con{position:relative; *zoom:1; font-size:12px; border:none !important;}*/
+.advert-con{position:relative; font-size:12px; border:none !important;}
+
+.advert-con .advert-title{
+	padding-bottom:8px;
+	line-height:16px;
+	height:16px;
+}
+
+.advert-con .advert-title .advert-link:link,.advert-con .advert-title .advert-link:visited{
+	color: #005EAC;
+    text-decoration: none;
+	font-weight:bold;
+	font-size:12px;
+}
+.advert-con .advert-title .advert-link:hover{
+	color: #005EAC;
+    text-decoration: underline;
+}
+
+
+.has-flash{
+	behavior: expression(function(ele){ele.runtimeStyle.behavior='none'; Expressions.pseudo.hover(ele, 'has-flash_hover');}(this));
+}
+
+.has-flash a.advert-more{
+	display:none
+}
+
+.has-flash:hover a.advert-more,
+.has-flash_hover a.advert-more{
+	display:block;
+	background-image:url("http://jebe.xnimg.cn/default/newpager.png");
+	background-repeat: no-repeat;
+	background-position: 0px -18px;
+	position:absolute;
+	top:0px;
+	right:23px;
+	display:block;
+	text-indent:-9999em;
+	width:25px;
+	height:18px;
+	outline: 0 none;
+	overflow:hidden;
+	z-index:9999px;
+}
+
+.has-flash a.advert-more:hover{background-position:0px -90px; cursor:pointer;}
+
+.advert-con .advert-main .side-item.wide-sponsors{
+	margin-top:0 !important;
+}
+#ad100000000072 .advert-con a.advert-more, #adla100000000072 .advert-con a.advert-more, #ad100000000073 .advert-con a.advert-more{top:13px;}
+
+.Widget .advert-con a.advert-more {
+    background-image: url("http://jebe.xnimg.cn/default/newpager.png");
+    background-position:0px -18px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height:18px;
+    outline: 0 none;
+    overflow: hidden;
+    position: absolute;
+    right:0px;
+    text-indent: -9999em;
+    top:10px;
+    width:25px;
+    z-index: 1;
+}
+.Widget .has-flash a.advert-more{
+	display:none;
+}
+.Widget .has-flash:hover a.advert-more,
+.Widget .has-flash_hover a.advert-more{
+	top:15px;
+	background-image: url("http://jebe.xnimg.cn/default/newpager.png");
+	background-repeat: no-repeat;
+	background-position:0px -18px;
+	position:absolute;
+	right:5px;
+	display:inline-block;
+	text-indent:-9999em;
+	width:25px;
+	height:18px;
+	outline: 0 none;
+	overflow:hidden;
+	z-index:9999;
+}
+
+.Widget .advert-con .advert-more:hover{
+	background-position:0px -90px;
+	cursor:pointer;
+}
+
+
+.Widget .has-flash a.advert-more:hover{
+	background-position:0px -90px;
+	cursor:pointer;
+}
+#ad100000000072 .selfHelp .advert-con,
+#adla100000000072 .selfHelp .advert-con,
+#ad100000000073 .selfHelp .advert-con,
+#ad100000000071 .selfHelp .advert-con,
+#ad100000000070 .selfHelp .advert-con{
+	padding:0;
+	border-top: 1px solid #CEE1EE !important;
+}
+#ad100000000072 .selfHelp .advert-con .advert-main,
+#adla100000000072 .selfHelp .advert-con .advert-main,
+#ad100000000073 .selfHelp .advert-con .advert-main,
+#ad100000000071 .selfHelp .advert-con .advert-main,
+#ad100000000070 .selfHelp .advert-con .advert-main{
+	padding:0;
+}
+#ad100000000072 .selfHelp .advert-con .advert-more,
+#adla100000000072 .selfHelp .advert-con .advert-more,
+#ad100000000073 .selfHelp .advert-con .advert-more,
+#ad100000000071 .selfHelp .advert-con .advert-more,
+#ad100000000070 .selfHelp .advert-con .advert-more{
+	top:22px;
+}
+#ad100000000072 .selfHelp .advert-con .advert-more:hover,
+#adla100000000072 .selfHelp .advert-con .advert-more:hover,
+#ad100000000073 .selfHelp .advert-con .advert-more:hover,
+#ad100000000071 .selfHelp .advert-con .advert-more:hover,
+#ad100000000070 .selfHelp .advert-con .advert-more:hover{
+	background-position: -20px -38px;
+	cursor:pointer;
+}
+#ad100000000072 .selfHelp .has-flash a.advert-more,
+#adla100000000072 .selfHelp .has-flash a.advert-more,
+#ad100000000073 .selfHelp .has-flash a.advert-more,
+#ad100000000071 .selfHelp .has-flash a.advert-more,
+#ad100000000070 .selfHelp .has-flash a.advert-more{
+	display:none;
+}
+#ad100000000072 .selfHelp .has-flash:hover a.advert-more,
+#adla100000000072 .selfHelp .has-flash:hover a.advert-more,
+#ad100000000072 .selfHelp .has-flash_hover a.advert-more,
+#adla100000000072 .selfHelp .has-flash_hover a.advert-more,
+#ad100000000073 .selfHelp .has-flash:hover a.advert-more,
+#ad100000000073 .selfHelp .has-flash_hover a.advert-more,
+#ad100000000071 .selfHelp .has-flash:hover a.advert-more,
+#ad100000000071 .selfHelp .has-flash_hover a.advert-more,
+#ad100000000070 .selfHelp .has-flash:hover a.advert-more,
+#ad100000000070 .selfHelp .has-flash_hover a.advert-more{
+	top:15px;
+	display:block;
+	background-image: url("http://jebe.xnimg.cn/default/newpager.png");
+	background-repeat: no-repeat;
+	background-position:0px -18px;
+	position:absolute;
+	right:5px;
+	display:inline-block;
+	text-indent:-9999em;
+	width:25px;
+	height:18px;
+	outline: 0 none;
+	overflow:hidden;
+	z-index:9999px;
+}
+
+#ad1000000063 .under{padding:10px 0; line-height: 140%; border-bottom: 1px solid #CEE1EE;}
+#ad1000000063 .under .rr{margin-right:5px}
+#ad1000000063 div h4{padding-bottom:10px}
+#ad1000000063 .selfHelp .img{margin-left:0}
+
+#ad1000000063 .will{clear:both;margin-right:10px;text-align:right; padding:0px 0px 10px 0px; color:#888}
+#ad1000000063 .will a{color:#888}
+#ad1000000063 p a:link,
+#ad1000000063 p a:visited,
+#ad1000000063 p a:hover,
+#ad1000000063 p a:active{color:#000;text-decoration:none;}
+#ad1000000063 .under,
+#ad1000000063 div.nobtborder{margin-bottom:0!important}
+#ad1000000063 .selfHelp .img{width:85px}
+
+#ad1000000060 .wide-sponsors{position:static;}
+#ad1000000060 .sponsors{position:static;}
+#ad1000000060 .wide-sponsors .side-item-body{position:static; z-index:auto;}
+#ad1000000060 .wide-sponsors .side-item-header{height:auto;}
+#ad1000000060 .sponsors .side-item-header{height:auto;}
+#ad1000000060 .wide-sponsors .side-item-header{clear:none;}
+#ad1000000060 .sponsors .side-item-body{clear:none;}
+
+.adspicholder{display:block;width:75px;heith:75px;float:left;}
+.ads-wrap{margin:3px 0 0 85px;word-wrap: break-word;word-break: break-all;}
+.ads-description{line-height:18px;margin-top:5px;}
+.side-item  a.ads-linkout{display:inline;color:#888888;text-decoration:none !important;}
+
+.vote-con{
+    font-size:12px;
+    font-weight:normal;
+    margin-bottom:-5px\9;
+}
+.vote-main li{
+    background:#F7F7F7;
+    height:25px;
+    margin-bottom:5px;
+    position:relative;
+    *zoom:1;
+}
+.vote-main li input,.vote-main li span{
+    z-index:1;
+    position:absolute;
+}
+.vote-main li input{
+    top:6px;
+    *top:2px;
+    left:10px;
+}
+.vote-main li .choice-word{
+    top:6px;
+    left:35px;
+    color:#000;
+}
+.vote-main li .choice-percent{
+    top:6px;
+    right:5px;
+}
+.vote-main li .choice-bg{
+    background:#D8DBE1;
+    width:0;
+    height:25px;
+    position:absolute;
+    top:0;
+    left:0;
+}
+.side-item-body .voteUserPic{
+    width:25px; 
+    height:25px; 
+    display:inline-block;
+    float:left;
+    margin-right:5px;
+    margin-top:2px;
+}
+.side-item-body .voteUserPic img {
+    width:100%;
+    height:100%;
+}
+.side-item-body .fans p{
+    height:28px;
+    line-height: 1.2em;
+    padding-top: 1px;
+}
+.fans-avatar-opt{    
+    width:25px;	
+    height:25px;	
+    display:inline-block;	
+    margin-right:5px;	
+    margin-top:2px;	
+    float:left;	
+    display:inline;
+}
+.fans-avatar-opt img{    
+    width:100%;	
+    height:100%;	
+    float:left;
+}
+.vote-main li .votePic{	
+    margin-left:245px;	
+    width:100%;
+}
+.vote-info{
+    margin-bottom:10px;
+    margin-bottom:5px\9;
+}
+.vote-info p{    
+    margin-top:10px;	
+    margin-bottom:6px;	
+    color:#666;
+}
+.vote-info .fans-avatar{	
+    width:25px;	
+    height:25px;	
+    display:inline-block;	
+    float:left;	
+    margin-right:5px;	
+    margin-top:2px;
+}
+.vote-info .fans-avatar img{	
+    width:100%;	
+    height:100%;
+}
+.vote-info .vote-fans{	
+    *height: 28px;	
+    min-height: 28px;
+}
+.vote-list li{background:none}
+.vote-list .voteTxt{position:absolute;left:0;width:240px;height:25px;background:#f7f7f7}
+.vote-list li .votePic{width:auto}
+.vote-list .votePic a{margin-top:0}
+.vote-list .votePic a img,.fans-avatar img{opacity:0.4;filter:alpha(opacity=40);}
+.vote-list .votePic a:hover img,.fans-avatar:hover img,.vote-list .votePic .fans-self img{opacity:1;filter:alpha(opacity=100);}
+.vote-main .voteTxt .choice-word{top:2px}
+
+
+
+/************************** the new standard ad by zhang.yu **********************/
+/************ 49 widget ************/
+.ad-contrainer{border-bottom:1px solid #CEE1EE; padding:0px; zoom:1;}
+.ad-show-box{padding-bottom:10px; margin-bottom:0px;}
+.ad-show-box .header{position:relative; font-weight:bold;}
+.ad-show-box .img{float:left; margin:0px;}
+.ad-show-box .img img{float:left;}
+.ad-show-box .discribe{float:right; width:130px; height:75px; font-family:宋体; outline:0 none;}
+.ad-show-box .ad-content{display:block; height:75px; word-wrap:break-word; word-break:break-all; text-decoration:none; color:#000000; width:130px;}
+.ad-show-box .close-btn{background-image:url("http://jebe.xnimg.cn/default/close-btn.png"); background-position:0px 0px; background-repeat:no-repeat; height:18px; outline: medium none; width:18px; cursor:pointer; position:absolute; top:0px; right:0px; display:none;}
+.ad-show-box .close-btn:hover{background-image:url("http://jebe.xnimg.cn/default/close-hover.png"); background-repeat:no-repeat; background-position:0px 0px;}
+.ad-show-box:hover .close-btn{display:block;}
+/*.ad-show-box:hover .advert-more{display:block;}*/
+.ad-show-box .footer{padding:6px 0px 1px 0px;}
+.ad-show-box .footer a:hover{text-decoration:underline;}
+.ad-show-box .footer .like-ad{padding:0px 0px 0px 16px; cursor:pointer; background:url("http://jebe.xnimg.cn/default/iFeeds-and-Requests-101102.png") no-repeat scroll left -1559px transparent; *line-height:18px; _line-height:16px;}
+.ad-close{padding:0px 0px 0px 5px;}
+.ad-close .close-reason{width:150px; color:#999999;}
+.ad-close .ad-confirm-btn{background:url("http://jebe.xnimg.cn/default/icons2.png") no-repeat scroll -1px -300px transparent; color:#666666; border:1px solid #8B8B8B; padding:1px 8px 1px 8px; text-shadow:1px 1px #FFFFFF;}
+.ad-close .ad-cancel-btn{background:url("http://jebe.xnimg.cn/default/icons2.png") no-repeat scroll -1px -300px transparent; color:#666666; border:1px solid #8B8B8B; padding:1px 8px 1px 8px; text-shadow:1px 1px #FFFFFF;}
+.thank-slogan{text-align:center; padding:10px;}
+.thank-slogan .thanks{background-color:#FFF9D7; padding:20px 10px 20px 10px; border:1px solid #CFC274; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; font-size:12px; line-height:20px; font-family:"宋体","Microsoft Yahei","微软雅黑","黑体";}
+
+.ad-standard-65{padding-top:10px; margin-bottom:-7px;}
+
+/********************************** app ******************************************/
+#ad100000000001{padding:0px 0px 10px 0px;}
+.sideBar .c .ad-area{padding-bottom:1px;}
+
+
+/********************************** social Ad 1 ********************************************/
+#ad1000000060 .has-flash:hover a.advert-more{top:2px; right:2px;}
+#ad1000000060 .has-flash_hover a.advert-more{top:2px; right:2px;}
+.Widget #ad1000000060 .has-flash:hover a.advert-more{top:12px; right:2px;}
+.Widget #ad1000000060 .has-flash_hover a.advert-more{top:12px; right:2px;}
+#ad1000000065{margin-top:-5px;}
+
+
+/********************************** share ********************************************/
+#ad100000000075 p{margin:0px;}
+
+#ad100000000100{font-size:0px;}
+
+
+

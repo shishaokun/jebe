@@ -77,16 +77,16 @@ JebeManager.define(function (opt) {
      * @return {Element[]} A list of all a elements within the parent
      */
     var $ = (function () {
-        var query = function (query, parent) {
+        var query = function (selector, parent) {
             parent = parent || document;
-            if (parent.querySelectorAll) {
+            if (false&&parent.querySelectorAll) {
                 if (parent === document) {
-                    return document.querySelectorAll(query);
+                    return document.querySelectorAll(selector);
                 }
                 var oldID = parent.id;
                 parent.id = 'rooted' + (++arguments.callee.counter);
                 try {
-                    return parent.querySelectorAll('#' + parent.id + ' ' + query);
+                    return parent.querySelectorAll('#' + parent.id + ' ' + selector);
                 } catch (e) {
                     throw e;
                 } finally {
@@ -97,52 +97,71 @@ JebeManager.define(function (opt) {
                 if (!parent.push) {
                     parent = [parent];
                 }
-                var regex = /\S+\s*/;
-                var section = regex.exec(query);
+                var section = /\S+\s*/.exec(selector);
                 if (section) {
-                    var remain = query.slice(section[0].length);
+                    var remain = selector.slice(section[0].length);
                     section = section[0].replace(/\s+$/, '');
                     var result = [];
-                    var id;
-                    var tagName;
-                    var className;
-                    var level = section.split('.');
-
-                    if (level[0].charAt(0) === '#') {
-                        id = level[0].slice(1);
+                    var id = /#([^\[\.]+)/.exec(section);
+                    if (id) {
+                        id = id[1];
                     }
-                    else {
-                        tagName = level[0];
+                    var tagName = /^[^\[\.#]+/.exec(section);
+                    if (tagName) {
+                        tagName = tagName[0];
                     }
-
-                    if (level[1]) {
-                        className = level[1];
+                    var className = /\.([^\[]+)/.exec(section);
+                    if (className) {
+                        className = className[1];
+                    }
+                    var attribute = /\[(.+)\]/.exec(section);
+                    if (attribute) {
+                        attribute = attribute[1];
+                        attribute = attribute.split('=');
+                        if (attribute.length === 1) {attribute[1] = '';}
                     }
 
                     for (var i = 0, len = parent.length ; i < len ; i++) {
-                        var elem = parent[i];
-                        var nodeList;
+                        var p = parent[i];
+                        var nodeList, filterList = [];
+                        var j;
                         if (id) {
                             result.push(document.getElementById(id));
                             continue;
                         }
-                        else if (tagName) {
-                            nodeList = elem.getElementsByTagName(tagName);
+
+                        if (tagName) {
+                            nodeList = p.getElementsByTagName(tagName);
                         }
-                        if (className) {
-                            if (!nodeList) {
-                                nodeList = elem.getElementsByTagName('*');
-                            }
-                            var regexClassName = new RegExp('(^|\\s)' + className + '(\\s|$)');
-                            for (i = 0, len = nodeList.length ; i < len ; i++) {
-                                if (regexClassName.test(nodeList[i].className)) {
-                                    result.push(nodeList[i]);
+                        else if (attribute || className) {
+                            nodeList = p.getElementsByTagName('*');
+                        }
+
+                        if (attribute) {
+                            j = 0;
+                            while (j < nodeList.length) {
+                                if (nodeList[j].getAttribute(attribute[0]) === attribute[1]) {
+                                    filterList.push(nodeList[j]);
                                 }
+                                j += 1;
+                            }
+                            nodeList = filterList;
+                            filterList = [];
+                        }
+
+                        if (className) {
+                            var regexClassName = new RegExp('(^|\\s)' + className + '(\\s|$)');
+                            j = 0;
+                            while (j < nodeList.length) {
+                                if (regexClassName.test(nodeList[j].className)) {
+                                    filterList.push(nodeList[j]);
+                                }
+                                j += 1;
                             }
                         }
-                        else {
-                            result = result.concat(dom.Tool.toArray(nodeList));
-                        }
+
+                        result = result.concat(filterList);
+
                     }
                     return query(remain, result);
                 }
@@ -186,6 +205,7 @@ JebeManager.define(function (opt) {
         }
     };
 
+
     var Jebe = Class({
 
         init: function (templateData) {
@@ -213,14 +233,18 @@ JebeManager.define(function (opt) {
             });
         },
 
-        render: function (tmpl) {//console.log(tmpl)
+        render: function (tmpl) {
+            //console.log(tmpl)
             var i, j, adzone, html, script, rr = +new Date();
             for (i = 0 ; i < tmpl.length ; i += 1) {
                 adzone = $('#'+this.adzonePrex + tmpl[i].adzone_id)[0];
                 html = '';
+                if (adzone.getAttribute('controls') === '') {
+                    html += '<a data-index="'+i+'" class="jebe-next" href="#">next</a>';
+                }
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
                     //'ad'+this.templateData[i].ads[j].ad_param.creative_id+'_'+rr+'_adbox'+this.templateData[i].adzone_id
-                    html += '<a data-index="'+i+'" class="jebe-refresh" href="#">refresh</a>'+tmpl[i].html.replace(new RegExp(tmpl[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
+                    html += tmpl[i].html.replace(new RegExp(tmpl[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
                 }
                 adzone.innerHTML = html;
                 script = document.createElement('script');
@@ -238,7 +262,9 @@ JebeManager.define(function (opt) {
                         }, 0);
                     })(JebeManager.jsRepo[tmpl[i].adzone_id], [eval("("+this.templateData[i].ads[j].widget+")"),this.templateData[i].ads[j].ad_param, this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id)]);
                 }
-                $('.jebe-refresh', adzone)[0].onclick = this.refresh;
+                if (adzone.getAttribute('controls') === '') {
+                    $('.jebe-next', adzone)[0].onclick = this.refresh;
+                }
             }
         },
 
@@ -247,12 +273,17 @@ JebeManager.define(function (opt) {
             return false;
         },
 
-        factory: function (idPrex) {
-            return {
-                getElementById: function (id) {
-                    return document.getElementById(idPrex + id);
-                }
-            }
+        factory: function (prex) {
+            var query = function (selector) {
+                return $(selector.replace(/#|=/g, '$1' + prex));
+            };
+            query.getElementById = function (id) {
+                return $('#'+ prex + id)[0];
+            };
+            query.getElementsByName = function (name) {
+                return $('[name=' + prex + name + ']');
+            };
+            return query;
         }
 
     });
@@ -269,7 +300,7 @@ JebeManager.define(function (opt) {
             });
 
             this.src = src;
-            this.autoRefresh();
+            //this.autoRefresh();
 
             new Jebe(window[NS+'_json'].list);
         },
