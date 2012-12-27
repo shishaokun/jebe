@@ -118,8 +118,8 @@
                     JebeLoader.reset(src);
                 }
                 else {
-                    loadRes('src/jebe.js');
-                    loadRes('css/widgetbox.css');
+                    loadRes('/assets/jebe.js');
+                    loadRes('/assets/widgetbox.css');
                 }
             });
         };

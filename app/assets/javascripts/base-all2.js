@@ -12569,7 +12569,7 @@ object.add('XN', 'dom, ua', function(exports, dom, ua) {
 	 * patch for old version
 	 */
 	this.namespace('config');
-	this.config.jumpOut = true;
+	this.config.jumpOut = false;
 
 	(function() {
 		var files = {};

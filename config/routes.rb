@@ -1,5 +1,9 @@
 Jebe::Application.routes.draw do
+
   match 'simulator' => 'simulator#index'
+  match 'runtime' => 'runtime#index'
+
+  match 'runtime/preview' => 'runtime#preview'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
