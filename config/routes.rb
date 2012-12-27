@@ -1,5 +1,5 @@
-Server::Application.routes.draw do
-  get 'simulator' => 'simulator#index'
+Jebe::Application.routes.draw do
+  match 'simulator' => 'simulator#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

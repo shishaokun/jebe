@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Server::Application.config.secret_token = '89079ea91c03483da384ec476853126f41b75dc02e049f58163dd2eaff6bff5159574d6e29d91a2d2da3cfa9c82c7f237e91e97879c78b3e939104ba6a4851ab'
+Jebe::Application.config.secret_token = '2709f136e45073b68a962081da7421923667a1e317a4bb6e0df08871c8f6b9c640e87ba34b3a88752cbd01c8be12eee52cfacccd8deab0c8aef4796f64ad8508'
