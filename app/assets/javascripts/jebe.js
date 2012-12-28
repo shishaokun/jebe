@@ -1,6 +1,6 @@
 JebeManager.define(function (opt) {
 
-    var NS = opt.ns;
+    var NS = 'jebe';
 
     var Class = function () {
             var Class = function () {
@@ -222,7 +222,7 @@ JebeManager.define(function (opt) {
             this.adzonePrex = 'ad';
             this.jsRepo = {};
 
-            this.load();
+            //this.load();
         },
 
         load: function () {
@@ -346,6 +346,7 @@ JebeManager.define(function (opt) {
 
     JebeManager.jsRepo = {};
 
-    return new JebeLoader(opt.src);
+    JebeManager.Jebe = Jebe;
+    JebeManager.JebeLoader = JebeLoader;
 
 });

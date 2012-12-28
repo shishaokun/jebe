@@ -1,6 +1,6 @@
 class RuntimeController < ApplicationController
   def index
   end
-  def preview
+  def preview	
   end
 end

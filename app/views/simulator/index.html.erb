@@ -1,9 +1,23 @@
+<style type="text/css">
+	iframe {
+		border: none;
+	}
+	.panel {
+		float: left;
+		width: 500px;
+		margin: 25px;
+	} 
+	h2 {
+		border-bottom: 1px solid grey;
+	}
+</style>
+<script type="text/javascript" src="/assets/jebe_simulator.js"></script>
 <h1>Jebe Simulator</h1>
-<div>
+<div class="panel">
 	<h2>Setting</h2>
 	<%= raw @setting %>
 </div>
-<div>
+<div class="panel">
 	<h2>runtime</h2>
-	<iframe src="/runtime/preview"></iframe>
+	<iframe src="/runtime/preview" jebe-simulator></iframe>
 </div>

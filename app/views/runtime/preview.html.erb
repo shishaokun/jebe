@@ -1,7 +1,75 @@
 <link href="http://s.xnimg.cn/a51059/n/core/home-frame2-all-min.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
-    .jebe-adzone {float: left; margin: 25px; position: relative; }
+    
 </style>
-<div id="ad100000000060" class="jebe-adzone" controls></div>
+<div id="adpreview" class="jebe-adzone" controls></div>
 <script type="text/javascript" src="/assets/base-all2.js"></script>
-<script type="text/javascript" src="/assets/ad.js"></script>
+<script type="text/javascript">
+document.domain = 'renren.com'
+(function () {
+
+    var loadRes = function (path, fn) {
+        var isCSS = /\.css$/.test(path), tag;
+        if (isCSS) {
+            tag = document.createElement('link');
+        }
+        else {
+            tag = document.createElement('script');
+        }
+        tag.onload = tag.onerror = tag.onreadystatechange = function () {
+            if (tag && tag.readyState && tag.readyState !== 'loaded' && tag.readyState !== 'complete') { return; }
+            try {
+                //tag.parentNode.removeChild(tag);
+                tag = null;
+            } catch (ex) {}
+            fn && fn();
+        }
+        if (isCSS) {
+            tag.type = 'text/css';
+            tag.rel = 'stylesheet';
+            tag.href = path;
+        }
+        else {
+            tag.type = 'text/javascript';
+            tag.src = path;
+        }
+        document.getElementsByTagName('head')[0].appendChild(tag);
+    };
+
+
+
+    var JebeManager = function (o) {
+
+        var load = function (r) {
+
+            loadRes(src, function () {
+                if (JebeLoader) {
+                    JebeLoader.reset(src);
+                }
+                else {
+                    loadRes('/assets/jebe.js');
+                    loadRes('/assets/widgetbox.css');
+                }
+            });
+        };
+
+        return {
+            load: load
+        }
+    };
+
+    JebeManager.define = function (fn) {
+       	fn();
+    }
+
+    JebeManager.load();
+
+    window.JebeManager = JebeManager;
+
+    window.send = function (data) {
+    	new JebeManager.Jebe([data]);
+    };
+
+
+})();
+</script>
