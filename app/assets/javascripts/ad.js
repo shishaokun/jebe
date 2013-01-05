@@ -130,7 +130,8 @@
     };
 
     JebeManager.define = function (fn) {
-        JebeLoader = fn(options);
+    	fn(options);
+        JebeLoader = new JebeManager.JebeLoader();
     }
 
     window.JebeManager = JebeManager;

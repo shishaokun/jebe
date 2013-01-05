@@ -1,5 +1,9 @@
-class SimulatorController < ApplicationController
+class JebeController < ApplicationController
+	
   def index
+  end
+
+  def simulator
   	file = File.dirname($0) + '../../template/setting.html'
     @setting = IO.read(file)
     file = File.dirname($0) + '../../template/runtime.html'
@@ -11,6 +15,12 @@ class SimulatorController < ApplicationController
     end
   end
 
+  def runtime
+  end
+
+  def preview
+  end
+
   def upload
   	require 'fileutils'
     tmp = params[:pic].tempfile
@@ -18,4 +28,7 @@ class SimulatorController < ApplicationController
     FileUtils.cp tmp.path, file
     render :json => {files: ['/files/'+params[:pic].original_filename]}
   end
+
 end
+
+  

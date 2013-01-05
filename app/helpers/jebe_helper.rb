@@ -1,0 +1,2 @@
+module JebeHelper
+end

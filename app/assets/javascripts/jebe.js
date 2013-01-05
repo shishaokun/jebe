@@ -210,7 +210,11 @@ JebeManager.define(function (opt) {
             init: function () {
             
             }
-        })
+        }),
+
+        tmpl: function (data) {
+
+        }
     };
 
 
@@ -243,7 +247,7 @@ JebeManager.define(function (opt) {
 
         render: function (tmpl) {
             //console.log(tmpl)
-            var i, j, adzone, html, script, rr = +new Date();
+            var i, j, adzone, html, script, rr = +new Date(), self = this;
             for (i = 0 ; i < tmpl.length ; i += 1) {
                 adzone = $('#'+this.adzonePrex + tmpl[i].adzone_id)[0];
                 html = '';
@@ -252,7 +256,15 @@ JebeManager.define(function (opt) {
                 }
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
                     //'ad'+this.templateData[i].ads[j].ad_param.creative_id+'_'+rr+'_adbox'+this.templateData[i].adzone_id
-                    html += tmpl[i].html.replace(new RegExp(tmpl[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
+                    html += tmpl[i].html//.replace(new RegExp(tmpl[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
+                    html = html.replace(/{{(.+?)}}/mg, function (s, p) {
+                        if (self.templateData[i].ads[j].ad_param[p]) {
+                            return self.templateData[i].ads[j].ad_param[p];
+                        }
+                        else {
+                            return '';
+                        }
+                    });
                 }
                 adzone.innerHTML = html;
                 script = document.createElement('script');
@@ -299,7 +311,7 @@ JebeManager.define(function (opt) {
     var JebeLoader = Class({
 
         init: function (src) {
-            //console.log(window[NS+'_json'])
+            console.log(window[NS+'_json'])
 
             var self = this;
 
@@ -310,7 +322,7 @@ JebeManager.define(function (opt) {
             this.src = src;
             //this.autoRefresh();
 
-            new Jebe(window[NS+'_json'].list);
+            new Jebe(window[NS+'_json'].list).load();
         },
 
         reset: function (src) {
@@ -338,7 +350,7 @@ JebeManager.define(function (opt) {
             var src = this.src + '&' + data, self = this;
 
             loadJS(src, function () {
-                new Jebe(window[NS+'_json'].list);
+                (new Jebe(window[NS+'_json'].list)).load();
             });
         }
 
