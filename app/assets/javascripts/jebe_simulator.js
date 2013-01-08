@@ -84,11 +84,16 @@
 
             this.types = ['number', 'email', 'url'];
             this.attributes = ['required', 'maxlength', 'minlength', 'max', 'min', 'pattern'];
+            this.errorMsg = {
+                required: '不能为空',
+                maxlength: '',
+                minlength: '太短'
+            };
             this.models = models;
 
             this.models.each(function (index, item) {
-                item = $(item);
-                item.on('input', $.proxy(self.onInput, self));
+                item.$errors = {};
+                $(item).on('input', $.proxy(self.onInput, self));
             });
         },
 
@@ -97,22 +102,42 @@
 
             if ($.inArray(element.attr('type'), self.types) > -1) {
                 self[element.attr('type')](element);
+                self.error(element);
             }
 
             $.each(self.attributes, function (index, attr) {
                 if (element.attr(attr) !== undefined) {
                     self[attr](element);
+                    self.error(element);
                 }
             });
         },
 
-        number: function (element) {
-            if (Validate.rNumber.test(element.val())) {
+        error: function (element) {
+            var valid = true, key;
+            element.siblings('.jebe-error').remove();
+            element.removeClass('jebe-valid jebe-invalid');
+            for (key in element[0].$errors) {
+                if (element[0].$errors[key]) {
+                    valid = false;
+                    element.after('<p class="jebe-error">'+this.errorMsg[key]+'</p>')
+                }
+            }
+            if (valid) {
                 element.addClass('jebe-valid');
+                var maxlength = element.attr('maxlength');
+                if (maxlength !== undefined) {
+                    element.after('<p class="jebe-error jebe-counter">还可以输入'+(Number(maxlength) - $.trim(element.val()).length)+'个汉字</p>');
+                }
             }
             else {
                 element.addClass('jebe-invalid');
             }
+            
+        },
+
+        number: function (element) {
+            element[0].$errors.number = !Validate.rNumber.test(element.val());
         },
 
         email: function (element) {
@@ -124,15 +149,15 @@
         },
 
         required: function (element) {
-
+            element[0].$errors.required = $.trim(element.val()) === '';
         },
 
         maxlength: function (element) {
-            
+            element[0].$errors.maxlength = $.trim(element.val()).length > Number(element.attr('maxlength'));
         },
 
         minlength: function (element) {
-            
+            element[0].$errors.minlength = $.trim(element.val()).length < Number(element.attr('minlength'));
         },
 
         max: function (element) {
@@ -144,8 +169,9 @@
         },
 
         pattern: function (element) {
-            
+            element[0].$errors.pattern = !new RegExp(element.attr('pattern')).test(element.val());
         }
+
     });
 
     Validate.rNumber = /^\d+(?:\.\d+)$/;

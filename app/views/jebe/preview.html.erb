@@ -56,7 +56,7 @@ document.domain = 'renren.com';
 
     window.JebeManager = JebeManager;
 
-    window.send = function (data) {console.log(data)
+    window.send = function (data) {
         if (JebeManager.Jebe) {
     	   new JebeManager.Jebe(data).render([{adzone_id: '0', html: window.name, js:'var init = function(){}'}]);
         }

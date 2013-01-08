@@ -1,0 +1,56 @@
+<style type="text/css">
+    .dialog {
+        border: 1px solid #aaa;
+    }
+    .dialog .dialog-header {
+        background-color: #ccc;
+        border-bottom: 1px solid #aaa;
+    }
+    .dialog .dialog-footer {
+        background-color: #ccc;
+        border-top: 1px solid #aaa;
+    }
+</style>
+<style type="text/css">
+    textarea {
+        outline: none;
+        resize: none;
+    }
+    #publisher {
+
+    }
+    #publisher textarea {
+        width: 576px;
+        height: 53px;
+        margin: 20px 20px;
+        padding: 6px 12px;
+        border: 1px solid #c7c7c7;
+        font-size: 14px;
+        line-height: 24px;
+    }
+    #publisher .utils {
+
+    }
+    #publisher .utils div {
+        cursor: pointer;
+    }
+</style>
+<form>
+    <div id="publisher">
+        <textarea class="textbox"></textarea>
+        <div class="utils">
+            <div class="pic ico ico-publisher-utils-pic"></div>
+            <div class="at ico ico-publisher-utils-at"></div>
+            <div class="emotion ico ico-publisher-utils-emotion"></div>
+        </div>
+        <span class="charactercounter"></span>
+        <input type="submit" value="发布" />
+    </div>
+</form>
+<script type="text/javascript">
+require(['textbox'], function (textbox) {
+    textbox.init({
+        form: 'form'
+    });
+});
+</script>

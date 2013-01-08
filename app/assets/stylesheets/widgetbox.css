@@ -1,16 +1,27 @@
-.jebe-adzone .jebe-next {
-    background: url("http://jebe.xnimg.cn/default/newpager.png") 0px -18px no-repeat;
-    text-indent: -99999px;
+.jebe-adzone .jebe-utils {
     position: absolute;
     top: 0;
     right: 0;
-    width: 25px;
-    height: 18px;
-    display: block;
     z-index: 10;
 }
-.jebe-adzone .jebe-next:hover {
+.jebe-adzone .jebe-utils a {
+	width: 25px;
+    height: 18px;
+    display: inline-block;
+    margin-left: 5px;
+}
+.jebe-adzone .jebe-utils .jebe-next {
+    background: url("http://jebe.xnimg.cn/default/newpager.png") 0px -18px no-repeat;
+}
+.jebe-adzone .jebe-utils .jebe-next:hover {
     background-position: 0px -90px;
+}
+.jebe-adzone .jebe-utils .jebe-close {
+    background: url("http://jebe.xnimg.cn/default/close-btn.png") no-repeat;
+    width: 18px;
+}
+.jebe-adzone .jebe-utils .jebe-close:hover {
+    background: url("http://jebe.xnimg.cn/default/close-hover.png") no-repeat;
 }
 
 /** sponsorsWidget by yang.zhao **/
