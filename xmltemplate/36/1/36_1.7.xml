@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <Content view="runtime">
+        <Init>
+            <![CDATA[
+            adparam = data;
+            query = $;
+
+            //对url地址进行处理加上前缀http
+            var makeUrl = function (raw) {
+                if(!raw) return "";
+               return 'http://' + raw.replace('http://','');
+            };
+            //对数字加逗号
+            function commaSplit(srcNumber) {
+                var txtNumber = '' + srcNumber;
+                if (isNaN(txtNumber) || txtNumber == "") {
+                   return srcNumber;
+                }else {
+                    var rxSplit = new RegExp('([0-9])([0-9][0-9][0-9][,.])');
+                    var arrNumber = txtNumber.split('.');
+                    arrNumber[0] += '.';
+                    do {
+                        arrNumber[0] = arrNumber[0].replace(rxSplit, '$1,$2');
+                    } while (rxSplit.test(arrNumber[0]));
+                    if (arrNumber.length > 1) {
+                        return arrNumber.join('');
+                    }else {
+                        return arrNumber[0].split('.')[0];
+                    }
+                }
+            }
+
+            //发送统计信息
+            var sendLog = function(engineUrl,abflag,clickUrl,refresh_source,refresh_idx){
+                engineUrl = encodeURIComponent(engineUrl+ clickUrl);
+                var userid=XN.cookie.get('id');
+                var loc = encodeURIComponent(window.location.href);
+                var param = '&url=' + engineUrl +'&abflag=' + abflag +'&userid=' + userid + '&location='+ loc;
+                if(refresh_source)
+                param = param+'&source='+refresh_source;
+                if(refresh_idx)
+                param = param+'&idx='+refresh_idx;
+                new XN.net.xmlhttp({
+                url: "http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/log",
+                method: 'post',
+                data: '&url=' + engineUrl +'&abflag=' + abflag +'&userid=' + userid + '&location='+ loc,
+                onSuccess: function(){},
+                onError: function(){}
+                }); 
+            }
+
+            //统计social信息的接口
+            var dealUserClick = function(ele,engineUrl,abflag){
+                for(var m=ele.firstChild; m!=null; m=m.nextSibling){
+                    if(m.nodeType == 1 && (m.tagName== 'A'|| m.tagName== 'a')){
+                        m.onclick = function(){
+                         sendLog(engineUrl,abflag,this.href);
+                        }
+                    }
+                }
+            }
+
+            var dealName = function(name,id,pic,sgType){
+                if(name.length > 3){name=name.substr(0,3);}
+                if(sgType == 1)
+                    name = "<a href='http://www.renren.com/profile.do?id="+id+"' target='_blank'>"+name+"</a>&nbsp;";
+                if(sgType == 2)
+                    name = "<a href='http://www.renren.com/profile.do?id="+id+"' class='userPic' target='_blank'><img  width='25' height='25' vspace='5'  src='"+pic+"' alt='"+name+"' title='"+name+"'/></a>&nbsp;";
+                return name;
+            };
+
+            var dealFriend =  function(friends,zaned,sgType){
+                    var result = ''
+                    for(var i=0;i<friends.length;i++){
+                            result += dealName(friends[i].name,friends[i].userID,friends[i].pic,sgType);
+                    }
+                    /*
+                    if(zaned)
+                        result = '&nbsp;'+result    
+                    */
+                    return result;
+            }
+
+
+
+
+                <xn:template category="common" unit="social" version="1.0.0" part="r_js" /> 
+                <xn:template category="common" unit="function" version="2.0.0" part="runtime"/> 
+                <xn:template category="like" unit="common" version="1.0.0" part="r_js"/>
+
+            XN.jebe.simplePlayerCloseWindow = closeWidgetWindow = function () {
+                if (window.sponsorsAd) {
+                    setTimeout(function(){
+                        window.sponsorsAd.hide();
+                    },0); 
+                }
+            }
+            XN.jebe.showSponsorsAd_flash = function(src, href, advars,length,width,keySet,creative_id) {
+                var a = window.sponsorsAd = XN.DO.alert({width:length+22,height:width,Y:XN.event.scrollTop() + 150,callBack:function(){stat=new Image();stat.src=href+'close';this.body.innerHTML = '';}, msg: '<div class="clearfix" style="position:relative;*zoom:1"><div id="sponsorsAdFlash" style="width:'+length+'px;height:'+width+'px;"></div><div id="sponsorsComments" style="display:none"><span style="width:55px;text-align:center;height:22px;background:url(http://a.xnimg.cn/imgpro/homeAd/ex/close-tab.png?ver=100415) no-repeat left top;filter:alpha(opacity=80);opacity:0.8;position:absolute;right: 0;top:-33px;line-height:22px;"><a style="line-height:22px;display:block;color:#FFF;font-weight:bold;" href="#nogo" onclick="closeWidgetWindow();return false;">关闭</a></span></div></div>',modal:true});
+                var stats = new Image();
+                stats.src = href;
+                a.footer.style.display = 'none';
+                a.body.style.padding = "0";
+                a.header.style.display = 'none';
+                a.header.parentNode.style.borderWidth = '1px 0 0 0';
+                a.body.style.border = '0';
+               
+                XN.loadFile('http://s.xnimg.cn/jspro/lib/swfobject.js', function() {
+                    var flashvars = {};
+                    flashvars.tvURL = src;   // tvURL视频地址
+                            
+                    flashvars.autoPlayFlag = true;  //autoPlayFlag 是否加载完了就自动播放true 为自动播放
+                    flashvars.hasSeek = false;// hasSeek 是否开启定位功能，false为不开启
+                    flashvars.tsc=XN.get_check;// TSC验票
+                    flashvars.click_url= encodeURIComponent( advars.clickUrl);
+                    var urlSet='[';
+                    for (var i=0; i<keySet.length;i++){
+                        urlSet += '{"url" : "http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/flashclicklog?creativeID='+keySet[i].CID+'&KEY='+keySet[i].KEY+'&type=1&t='+Math.random()+'"}';
+                        if(i != (keySet.length-1)){
+                            urlSet += ',';
+                        }
+                    }
+                    urlSet += ']';
+            /*
+                    if(keySet.length >0){
+                        flashvars.creativeId = keySet[0].CID;
+                    }else{
+                        flashvars.creativeId = "";    
+                    }
+            */
+                    flashvars.creativeId=creative_id;
+                    flashvars.callDirectUrl = "";
+                    flashvars.urlSet =encodeURIComponent(urlSet);
+                    var params = {};
+                    params.wmode="window";
+                    params.allowScriptAccess="always";
+                    params.allowfullscreen ="true";
+                    params.quality = "high";
+                    setTimeout(function(){ swfobject.embedSWF("http://jebe.xnimg.cn/17822/flashbox_player.swf", "sponsorsAdFlash", length,width, "9",false , flashvars, params);},0);
+                });
+                XN.dom.disable();
+            };
+  
+            var engineUrl = adparam.click_url;
+
+            var json = [];
+            var creative_id = data.creative_id;
+            creative_id = creative_id.substring(0,1)+creative_id.substring(5,10)+creative_id.substring(12,14)+creative_id.substring(17,19);
+            var keyArray = data.keySet.split(",");
+            for (var i=0; i < keyArray.length;i++){
+                json.push({"KEY":"'+keyArray[i]+'","CID":"'+data.creative_id+'"});
+            }
+
+            var videoClickUrl = query.getElementById('videoClickUrl');console.log()
+
+            $('#videoClickUrl').on('click', function (e) {
+                XN.jebe.showSponsorsAd_flash(data.media_uri+data.videoUrl, data.click_url, {clickUrl: data.click_url}, Number(data.length), Number(data.width), json, Number(creative_id));
+                e.preventDefault();
+                return false;
+            });
+
+            data.hasZan = false;
+            data.hasZanInfo=false;
+            if(data.hasZan){
+                //显示social的信息
+                var userID = XN.cookie.get( 'id' );
+                if(userID == ''){ return;}
+                var zaned = false;
+                if(XN !='' && XN.cookie.get('jebe_widget_zaned'+adparam.creative_id+userID) == 'true' ){    
+                    zaned = true;
+                }
+                query.getElementById('aZan').style.display='';
+                query.getElementById('aZanImg').style.display='';
+                engineUrl = adparam.click_url;
+                if(zaned){
+                    query.getElementById('aZan').onclick = function(){};
+                    query.getElementById('aZan').style.cursor= "text";
+                    query.getElementById('aZan').style.color= "gray";
+                    query.getElementById('aZan').style.textDecoration= "none";
+                    query.getElementById('aZanImg').onclick = function(){};
+                    query.getElementById('aZanImg').style.cursor= "text";
+                    query.getElementById('aZanImg').style.color= "black";
+                    query.getElementById('aZanImg').style.textDecoration= "none";
+                    query.getElementById('likeImage').src= "http://jebe.xnimg.cn/default/unlike.gif"; 
+                    query.getElementById('aZanSmall').innerHTML= "已赞过";
+                }else{
+                    query.getElementById('aZan').onclick  = query.getElementById('aZanImg').onclick= function(){
+                    zaned = XN.cookie.get('jebe_widget_zaned'+adparam.creative_id+userID);
+                    if(zaned){XN.DO.showError("已赞过！");return;}
+                    var request= new JebeApi.RestRequests(adparam.creative_id,'','');   
+                    request.add(JebeApi.PersonRequest.getFriendListByZanedHbase({userID:userID,creativeID:adparam.creative_id,count:3},'result',false));
+                    request.add(JebeApi.ActionRequest.getZanCounts({creativeID:adparam.creative_id},'result',false));
+                    request.add(JebeApi.ActionRequest.zan({userID:userID,creativeID:adparam.creative_id},'result',false));
+
+                    request.send(function(response){
+                        if(data.hasZanInfo){
+                        response = eval('{'+response.responseText+'}');
+                        var friends = response[0].result;
+                        var friendNames = '';
+
+                        for(var i=0;i<friends.length;i++){
+                            if(i == 0){friendNames = friends[i].name;}
+                            else {friendNames = friendNames + ',' + friends[i].name;}
+                        }
+
+                        var count = parseInt(response[1].result) + 1;
+                        if(count == 0) {
+                            query.getElementById('selfzan').innerHTML = ' ';
+                            return;
+                        }
+                        var result = dealZanInfo(true,count,friends,data.hasZanInfo);
+                        query.getElementById('aZan').innerHTML = '已赞过 ';
+
+                        if(friendNames != ''){
+                            friendNames = friendNames+' 等';
+                        }
+
+                        query.getElementById('selfzan').innerHTML = '&nbsp;&nbsp;&nbsp;<font color="gray">已有 '+friendNames + (count+200)+'人赞</font>';
+                        if(result)
+                            query.getElementById('selfzan').className = 'hasBg';
+                            dealUserClick(query.getElementById('selfzan'),engineUrl,'like_user');
+                        }
+
+                        XN.cookie.set('jebe_widget_zaned'+adparam.creative_id+userID,true,30);
+                        query.getElementById('aZan').style.cursor= "text";
+                        //query.getElementById('aZan').style.color= "gray";
+                        query.getElementById('aZan').style.textDecoration= "none";
+                        query.getElementById('aZan').onclick = function(){};
+                        query.getElementById('aZanImg').style.cursor= "text";
+                        query.getElementById('aZanImg').style.color= "black";
+                        query.getElementById('aZanImg').style.textDecoration= "none";
+                        query.getElementById('aZanImg').onclick = function(){};
+                        query.getElementById('likeImage').src= "http://jebe.xnimg.cn/default/unlike.gif";
+                        },function(){});
+                    };   
+                }
+
+                if(data.hasZanInfo){
+
+                    var req= new JebeApi.RestRequests(adparam.creative_id,'','');   
+                    req.add(JebeApi.PersonRequest.getFriendListByZanedHbase({userID:userID,creativeID:adparam.creative_id,count:3},'result',false));
+                    req.add(JebeApi.ActionRequest.getZanCounts({creativeID:adparam.creative_id},'result',false));
+                    req.send(function(response){
+                    response = eval('{'+response.responseText+'}');
+                    var friends = response[0].result;
+                    var friendNames = '';
+
+                    for(var i=0;i<friends.length;i++){
+                        if(i == 0){friendNames = friends[i].name;}
+                        else {friendNames = friendNames + ',' + friends[i].name;}
+                    }
+
+                    var count = parseInt(response[1].result)+1;
+                    if(count == 0) return;
+                    var result = dealZanInfo(zaned,count,friends,data.hasZanInfo);
+
+                    if(friendNames != '' && response[1].result!= 0){
+                        friendNames = friendNames+' 等';
+                    }
+
+                    query.getElementById('selfzan').innerHTML = '&nbsp;&nbsp;&nbsp;<font color="gray">已有 ' + friendNames + (count+200)+' 人赞</font>';
+                    if(result)
+                        query.getElementById('selfzan').className = 'hasBg';
+                    dealUserClick(query.getElementById('selfzan'),engineUrl,'like_user');
+                    },function(){});
+                }
+                
+            }
+
+            var aShare = query.getElementById('aShare');
+            if (data.hasShare) {
+                if (window['create_share_jebe']) {
+                    aShare.onclick = function () {
+                        var url = geneRealClickUrls('http://about:blank','abflag=share',adparam,{tcount:1},data,false);
+                        XN.net.sendStats(url); 
+                        create_share_popup({"type":5+""+(data.edm.type =3 ? 2 : data.edm.type),"link":data.edmUrl,"title":"tst","adcode":data.edmID,"statID":'ad_'+adparam.adzoneId+'_'+adparam.creative_id,"level":1,"bodyLink":geneRealClickUrls(data.edm.bodyLink,'abflag=share',adparam,{tcount:1},data,true)});
+                    };
+                }
+            }
+            else {
+                aShare.style.display = 'none';
+            }
+
+
+            var socialCookie = false;
+            var userID = XN.cookie.get( 'id' );
+            if(data.hasSocialButton && data.hasSocialButton == 1){
+              var voteAction = query.getElementById('socialAction');
+              voteAction.style.display = '';
+              voteAction.href = geneRealClickUrls(data.socialBUrl,'abflag=button', adparam,{tcount:0},data); 
+            }
+            if(data.hasSocial && data.hasSocial == 1 ){
+            //if(false){
+                if(data.hasSocialButton && data.hasSocialButton == 1){
+                if(XN !='' && XN.cookie.get('jebe_widget_social'+adparam.creative_id+userID) == 'true' ){
+                    socialCookie = true;
+                }
+              var voteAction = query.getElementById('socialAction');
+              voteAction.style.display = '';
+              voteAction.href = geneRealClickUrls(data.socialBUrl,'abflag=button', adparam,{tcount:0},data); 
+              var link = data.socialBUrl;
+              voteAction.onclick = function(){
+                if(XN.cookie.get('jebe_widget_social'+adparam.creative_id+XN.cookie.get('id')) == null && !query.getElementById('response').value){
+                   XN.cookie.set('jebe_widget_social'+adparam.creative_id+XN.cookie.get('id'),true,1);
+                   var me = "";
+                   if(!query.getElementById('hasFriends').value)
+                        me += "我和";
+                   query.getElementById('info').innerHTML = me+ query.getElementById('info').innerHTML;
+                    dealUserClick(query.getElementById('info'),engineUrl,'social_user');
+                }
+                var userID = XN.cookie.get( 'id' );
+                if(userID == ''){
+                    window.open(link);  
+                }
+
+            }
+            };
+            if(data.hasSocialInfo){
+            if(userID == ''){ return;}
+            var dd = new JebeApi.RestRequests(adparam.creative_id,'','');
+            dd.add(JebeApi.PersonRequest.getFriendsListBySocial({userID:userID,id:data.socialId,count:3,type:data.socialType,creativeID:adparam.creative_id,pvtime:adparam.pvtime},'result',false));
+            //dd.add(JebeApi.PersonRequest.getFriendsListBySocial({userID:userID,id:data.socialId,count:3,type:data.socialType,creativeID:''},'result',false));
+            dd.add(JebeApi.PersonRequest.getCountBySocial({id:data.socialId,type:data.socialType},'result',false));
+            dd.add(JebeApi.PersonRequest.getJoinedBySocial({id:data.socialId,type:data.socialType},'result',false));
+            dd.send(function(response){
+                var result = eval('{'+response.responseText+'}');
+                var socialCount = result[1].result;
+                if(socialCount == 0)  return;
+                var isSocial= socialCookie ? true : result[2].result;
+                if(result[2].result)
+                    query.getElementById('response').value = 'true';
+                var socialName = data.socialName;
+                var friends = result[0].result;
+                if(friends && friends.length > 0){
+                    query.getElementById('hasFriends').value = 'true';
+                    }
+                //减少请求放到好友信息里
+                /*if(friends.length >= 0 && friends.length < 4 ){
+                    var t = Math.random();
+                    var friendCountUrl = "http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/friendscount?creativeID="+adparam.creative_id+"&friendCount="+friends.length+"&t="+t;
+                    var img = document.createElement('img');
+                    img.src = friendCountUrl;
+                }*/
+                var info =  dealSocialInfo(isSocial,socialCount,friends,data,adparam);
+                if(info){
+                    query.getElementById('info').style.display = '';
+                    query.getElementById('info').innerHTML = info;
+                    dealUserClick(query.getElementById('info'),engineUrl,'social_user');
+                }
+                    dealFriendLengthForStatId(data,query,adparam,friends.length);
+                },function(){});
+             }
+            }
+            function injectCSS() {
+               if(document.getElementById("JEBE_SOCAIL_ONELINE_STYLE") == null){
+                var cssText = ".side-item .side-item-body .fans{line-height:12px;*line-height:13px;}.side-item-body .fans .ad_friends_img_wrapper{float:left;*margin-top: -5px;}";
+                var cssObj = document.createElement("style");
+                cssObj.id = "JEBE_SOCAIL_ONELINE_STYLE";
+                var IS_IE = navigator.userAgent.indexOf("MSIE") >= 0;
+                if (IS_IE) {
+                    cssObj.type = "text/css";
+                    cssObj.styleSheet.cssText = cssText;
+                    document.getElementsByTagName("head")[0].appendChild(cssObj)
+                } else {
+                    document.body.appendChild(cssObj);
+                    cssObj.innerHTML = cssText;
+                }
+               }
+            }
+
+            injectCSS();
+
+            var nielsen = data.nielsen2;
+            var eIDs = ['title','videoClickUrl'];
+            if (nielsen){
+                var pUrl = nielsen.pvUrl;
+                if(pUrl && pUrl != '' && adparam.creative_id) {
+                    var str = 'xna' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+                    pUrl = pUrl + str;
+                    var img = document.createElement('img');
+                    img.src=pUrl+'&r='+Math.random();
+
+                      // var preq = pUrl+'&r='+Math.random();
+                        //使用主站发请求的方式
+                     // object.use("net",function(net){net.ping( preq )});
+                    
+                }
+                if(eIDs){ 
+                    for (var i = 0 ; i < eIDs.length ; i++) {
+                    var ce = query.getElementById(eIDs[i]);
+                        if(ce){
+                            XN.event.addEvent(ce,'click',function(){
+                                var cUrl = nielsen.clickUrl;
+                                if(cUrl && cUrl != '' && adparam.creative_id){
+                                var str = 'xna' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+                                cUrl = cUrl + str;
+                                var img = document.createElement('img');
+                                img.src = cUrl+'&r='+Math.random();
+
+                        // var preq = pUrl+'&r='+Math.random();
+                            //使用主站发请求的方式
+                            // object.use("net",function(net){net.ping( preq )});
+                                
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            var nielsen_share = data.nielsen2_share;
+            var eIDs_share = ['aShare'];
+            if (nielsen_share){
+             //   var pUrl = nielsen_share.pvUrl;
+              //  if(pUrl && pUrl != '' && adparam.creative_id) {
+                //  var str = 'xns' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+               //   pUrl_ = pUrl + str;
+               //   var img = document.createElement('img');
+               //   img.src=pUrl+'&r='+Math.random();
+                //}
+                if(eIDs_share){
+                    for (var i = 0 ; i < eIDs_share.length ; i++) {
+                    var ce = query.getElementById(eIDs_share[i]);
+                        if(ce){
+                            XN.event.addEvent(ce,'click',function(){
+                                var cUrl = nielsen_share.clickUrl;
+                                if(cUrl && cUrl != '' && adparam.creative_id){
+                                var str = 'xna' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+                                cUrl = cUrl + str;
+                                var img = document.createElement('img');
+                                img.src = cUrl+'&r='+Math.random();
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            var nielsen_attend = data.nielsen2_attend;
+            var eIDs_attend = ['aAttend'];
+            if (nielsen_attend){
+             //   var pUrl = nielsen_share.pvUrl;
+              //  if(pUrl && pUrl != '' && adparam.creative_id) {
+                //  var str = 'xns' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+               //   pUrl_ = pUrl + str;
+               //   var img = document.createElement('img');
+               //   img.src=pUrl+'&r='+Math.random();
+                //}
+                if(eIDs_attend){
+                    for (var i = 0 ; i < eIDs_attend.length ; i++) {
+                    var ce = query.getElementById(eIDs_attend[i]);
+                        if(ce){
+                            XN.event.addEvent(ce,'click',function(){
+                                var cUrl = nielsen_attend.clickUrl;
+                                if(cUrl && cUrl != '' && adparam.creative_id){
+                                var str = 'xna' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+                                cUrl = cUrl + str;
+                                var img = document.createElement('img');
+                                img.src = cUrl+'&r='+Math.random();
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            var nielsen_download = data.nielsen2_download;
+            var eIDs_download = ['aDownload'];
+            if (nielsen_download){
+                if(eIDs_download){
+                    for (var i = 0 ; i < eIDs_download.length ; i++) {
+                    var ce = query.getElementById(eIDs_download[i]);
+                        if(ce){
+                            XN.event.addEvent(ce,'click',function(){
+                                var cUrl = nielsen_download.clickUrl;
+                                if(cUrl && cUrl != '' && adparam.creative_id){
+                                var str = 'xna' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+                                cUrl = cUrl + str;
+                                var img = document.createElement('img');
+                                img.src = cUrl+'&r='+Math.random();
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            var nielsen_buy = data.nielsen2_buy;
+            var eIDs_buy = ['aBuy'];
+            if (nielsen_buy){
+                if(eIDs_buy){
+                    for (var i = 0 ; i < eIDs_buy.length ; i++) {
+                    var ce = query.getElementById(eIDs_buy[i]);
+                        if(ce){
+                            XN.event.addEvent(ce,'click',function(){
+                                var cUrl = nielsen_buy.clickUrl;
+                                if(cUrl && cUrl != '' && adparam.creative_id){
+                                var str = 'xna' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+                                cUrl = cUrl + str;
+                                var img = document.createElement('img');
+                                img.src = cUrl+'&r='+Math.random();
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            var nielsen_like = data.nielsen2_like;
+            var eIDs_like = ['socialAction'];
+            if (nielsen_like){
+                if(eIDs_like){
+                    for (var i = 0 ; i < eIDs_like.length ; i++) {
+                    var ce = query.getElementById(eIDs_like[i]);
+                        if(ce){
+                            XN.event.addEvent(ce,'click',function(){
+                                var cUrl = nielsen_like.clickUrl;
+                                if(cUrl && cUrl != '' && adparam.creative_id){
+                                var str = 'xna' + adparam.creative_id + 'xns' + (parseInt(adparam.creative_id.substr(0,10)) + parseInt(XN.cookie.get('id')));
+                                cUrl = cUrl + str;
+                                var img = document.createElement('img');
+                                img.src = cUrl+'&r='+Math.random();
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            ]]>
+        </Init>
+        <![CDATA[
+            <div class="side-item wide-sponsors">
+                <div class="side-item-header clearfix">
+                    <h4><a id="title" href="{{click_url}}" target="_blank">{{title}}</a></h4>
+                    <div class="option">{{#hasMore}}<a id="more" class="link" href="{{click_url}}" target="_blank">更多</a>{{/hasMore}}</div>
+                </div>
+                <div class="side-item-body clearfix">
+                    <div class="figure"> 
+                        <a id="videoViewPicClickUrl" class="link" href="{{click_url}}" target="_blank" >
+                            <img id="videoViewPic" width="240" height="160" src="{{media_uri+videoViewPicUrl}}"/>
+                        </a> 
+                        <a id="videoClickUrl" href="{{click_url}}" class="play" style="width:240px;height:160px">播放</a>
+                    </div>
+                    <div class="praiseInfo"><span id='zanInfo'></span></div>
+                    <div id="info" class="fans" style="display:none;">
+                        <span id= "info1"></span>
+                        <span id= "friendList"></span>
+                        <span id= "info2"></span>
+                    </div>
+                    <input type="hidden" id="response"></input>
+                    <input type="hidden" id="hasFriends"></input>
+                <div class="footer">
+                    {{#hasAttend}}
+                    <a id="aAttend" class="link" href="{{click_url}}" target="_blank"><img class="sw_button_img" src="http://jebe.xnimg.cn/default/img/i-want-join-button.png"/></a>
+                    {{/hasAttend}}
+                    {{#hasDownload}}
+                    <a id="aDownload" class="link" href="{{click_url}}" target="_blank"><img class="sw_button_img" src="http://jebe.xnimg.cn/20100305/2006/a_main_hatH_ac_073157.png" /></a>
+                    {{/hasDownload}}
+                    {{#hasBuy}}
+                    <a id="aBuy" class="link" href="{{click_url}}" target="_blank"><img class="sw_button_img" src="http://jebe.xnimg.cn/20100305/2006/a_main_hatH_ac_073157.png" /></a>
+                    {{/hasBuy}}
+                    <a class="link" href="#nogo" name="jebe_button" id="socialAction" style="display:none" target="_blank" >
+                        <img class="sw_button_img" src="http://jebe.xnimg.cn/default/follow-button1.gif" />
+                    </a>
+                    <a id="aZanImg" class="link" href="#nogo" style="display:none;">
+                        <img class="sw_button_img" src="http://jebe.xnimg.cn/default/unlike.gif" id="likeImage"/>
+                    </a>
+                    <a id="aZan" class="link" href="#nogo" style="display:none;">我喜欢</a>
+                    <a id="aShare" class="link" href="javascript:;">
+                        <img class="sw_button_img" src="http://jebe.xnimg.cn/default/img/sw_share_button.png"/>
+                    </a>
+                    </div>
+                </div>
+            </div>
+        ]]>
+    </Content>
+        <Content view="setting">
+                <Init>
+                    <![CDATA[
+var keyLen = 0;
+init = function (data, query) {
+    if (data && data != '') {
+        data = eval('(' + data + ')');
+
+         <xn:template category="common" unit="nielsen" version="2.0.0" part="s_init" /> 
+         <xn:template category="button" unit="nielsen_share" version="2.0.0" part="s_init" />
+         <xn:template category="button" unit="nielsen_attend" version="2.0.0" part="s_init" />
+         <xn:template category="button" unit="nielsen_download" version="2.0.0" part="s_init" />
+         <xn:template category="button" unit="nielsen_buy" version="2.0.0" part="s_init" />
+         <xn:template category="button" unit="nielsen_like" version="2.0.0" part="s_init" />
+
+
+
+
+
+        <xn:template category="common" unit="title" version="2.0.0" part="s_init"/> 
+        <xn:template category="flash" unit="common" version="1.0.0" part="s_init"/> 
+        <xn:template category="common" unit="social" version="1.0.0" part="s_init"/>    
+        <xn:template category="button" unit="share" version="1.0.0" part="s_init" />
+        <xn:template category="like"   unit="common" version="1.0.0" part="s_init" />   
+        <xn:template category="button" unit="common" version="2.0.0" part="s_init" params="{upperCase:'Attend',lowerCase:'attend'}"/>   
+        <xn:template category="button" unit="common" version="2.0.0" part="s_init" params="{upperCase:'Download',lowerCase:'download'}"/>
+        <xn:template category="button" unit="common" version="2.0.0" part="s_init" params="{upperCase:'Buy',lowerCase:'buy'}"/> 
+        preview();
+    }
+    $("#edit-ad-program").dialog({ bgiframe: true,autoOpen:false,modal:true,width:580});
+    };
+                    ]]>
+                </Init>
+            <![CDATA[
+                <script>
+                <xn:template category="common" unit="nielsen" version="1.0.0" part="s_js"/>
+                <xn:template category="common" unit="function" version="2.0.0" part="setting"/>
+var count = parseInt("0");
+
+creativeData = function () {
+var result = {};
+var validateResult = ValidateUtil.newResultPack();
+
+
+
+    <xn:template category="common" unit="nielsen" version="2.0.0" part="s_create"/>
+    <xn:template category="button" unit="nielsen_share" version="2.0.0" part="s_create"/>   
+    <xn:template category="button" unit="nielsen_attend" version="2.0.0" part="s_create"/>  
+    <xn:template category="button" unit="nielsen_download" version="2.0.0" part="s_create"/>    
+    <xn:template category="button" unit="nielsen_buy" version="2.0.0" part="s_create"/>
+    <xn:template category="button" unit="nielsen_like" version="2.0.0" part="s_create"/>
+
+
+
+
+
+<xn:template category="common" unit="title" version="2.0.0" part="s_create"/>
+
+<xn:template category="flash" unit="common" version="1.0.0" part="s_create"/>
+<xn:template category="like" unit="common" version="1.0.0" part="s_create"/><!--SG文字-->
+<xn:template category="common" unit="social" version="1.0.0" part="s_create"/>
+
+<xn:template category="button" unit="common" version="2.0.0" part="s_create" params="{upperCase:'Attend',lowerCase:'attend',prompt:'我要参加'}"/>
+<xn:template category="button" unit="common" version="2.0.0" part="s_create" params="{upperCase:'Buy',lowerCase:'buy',prompt:'马上抢购'}"/>
+<xn:template category="button" unit="common" version="2.0.0" part="s_create" params="{upperCase:'Download',lowerCase:'download',prompt:'立即下载'}"/>
+<xn:template category="button" unit="share" version="1.0.0" part="s_create"/>   
+}
+
+<xn:template category="button" unit="share" version="1.0.0" part="s_js"/>
+
+<xn:template category="button" unit="common" version="2.0.0" part="s_js" params="{upperCase:'Attend',lowerCase:'attend'}"/>
+<xn:template category="button" unit="common" version="2.0.0" part="s_js" params="{upperCase:'Download',lowerCase:'download'}"/>
+<xn:template category="button" unit="common" version="2.0.0" part="s_js" params="{upperCase:'Buy',lowerCase:'buy'}"/>
+
+<xn:template category="common" unit="title" version="2.0.0" part="s_js"/>
+
+<xn:template category="flash" unit="common" version="1.0.0" part="s_js" params="{picHeight:160,picWidth:240}"/>
+
+<xn:template category="button" unit="share" version="1.0.0" part="s_js" />
+
+<xn:template category="common" unit="social" version="1.0.0" part="s_js"/>
+
+<xn:template category="like" unit="common" version="1.0.0" part="s_js"/><!--SG文字-->     
+
+preview = function() {
+<xn:template category="common" unit="title" version="2.0.0" part="s_preview"/>
+<xn:template category="flash" unit="common" version="1.0.0" part="s_preview"/>
+<xn:template category="button" unit="share" version="1.0.0" part="s_preview"/>
+<xn:template category="common" unit="social" version="1.0.0" part="s_preview"/><!--喜欢-->
+<xn:template category="button" unit="common" version="2.0.0" part="s_preview" params="{upperCase:'Attend',lowerCase:'attend'}"/>
+<xn:template category="button" unit="common" version="2.0.0" part="s_preview" params="{upperCase:'Download',lowerCase:'download'}"/>
+<xn:template category="button" unit="common" version="2.0.0" part="s_preview" params="{upperCase:'Buy',lowerCase:'buy'}"/>
+
+};
+
+</script>
+                <xn:template category="common" unit="title" version="2.0.0" part="s_html"/> 
+             <xn:template category="flash" unit="common" version="1.0.0" part="s_html" params="{picHeight:160,picWidth:240}"/>  
+                
+                    <xn:template category="common" unit="nielsen" version="2.0.0" part="s_html"/>   
+                    <xn:template category="button" unit="nielsen_share" version="2.0.0" part="s_html"/>
+                    <xn:template category="button" unit="nielsen_attend" version="2.0.0" part="s_html"/>
+                    <xn:template category="button" unit="nielsen_download" version="2.0.0" part="s_html"/>
+                    <xn:template category="button" unit="nielsen_buy" version="2.0.0" part="s_html"/>
+                    <xn:template category="button" unit="nielsen_like" version="2.0.0" part="s_html"/>
+
+
+
+                <div class="input-line clearfix">
+                    <div class="input-title creat-s4">功能按钮:</div>
+                <div class="input-form">
+                        <xn:template category="common" unit="social" version="1.0.0" part="s_html"/>
+                        <xn:template category="like" unit="common" version="1.0.0" part="s_html"/> 
+                        <xn:template category="button" unit="share" version="1.0.0" part="s_html" }"/>
+                        <xn:template category="button" unit="common" version="2.0.0" part="s_html" params="{upperCase:'Attend',lowerCase:'attend',url:'static.jebe.renren.com/bolt/img/white.gif',className:'action-button3'}"/>
+                        <xn:template category="button" unit="common" version="2.0.0" part="s_html" params="{upperCase:'Download',lowerCase:'download',url:'static.jebe.renren.com/bolt/img/white.gif',className:'action-button4'}"/>
+                        <xn:template category="button" unit="common" version="2.0.0" part="s_html" params="{upperCase:'Buy',lowerCase:'buy',url:'jebe.xnimg.cn/20100624/1755/a_main_L3gO_57_040250.png',className:''}"/>    
+                    </div>
+                
+                </div>
+
+                <xn:template category="button" unit="share" version="1.0.0" part="s_effect"/>
+                <div class="input-line clearfix" id="datatoshow" style="display:none"></div>
+                <!--ThisIsCut-offRule-->
+
+                <xn:template category="common" unit="title" version="2.0.0" part="s_view"/>
+                <div class="side-item-body clearfix">
+                    <xn:template category="flash" unit="common" version="1.0.0" part="s_view" params="{picHeight:160,picWidth:240}"/>
+                    <div class="footer">    
+                        <xn:template category="common" unit="social" version="1.0.0" part="s_view"/>
+                        <xn:template category="button" unit="common" version="2.0.0" part="s_view" params="{upperCase:'Attend',lowerCase:'attend',url:'jebe.xnimg.cn/default/img/i-want-join-button.png'}"/>
+                        <xn:template category="button" unit="common" version="2.0.0" part="s_view" params="{upperCase:'Download',lowerCase:'download',url:'jebe.xnimg.cn/20100305/2006/a_main_hatH_ac_073157.png'}"/>
+                            <xn:template category="button" unit="common" version="2.0.0" part="s_view" params="{upperCase:'Buy',lowerCase:'buy',url:'jebe.xnimg.cn/20100624/1755/a_main_L3gO_57_040250.png'}"/>
+                        <xn:template category="button" unit="share" version="1.0.0" part="s_view"/>
+                    </div>
+                </div>
+            ]]>
+        </Content>
+</Module>
