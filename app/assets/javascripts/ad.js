@@ -116,8 +116,8 @@
                     self.JebeLoader.reset(src);
                 }
                 else {
-                    loadRes('/assets/jebe.js');
-                    loadRes('/assets/widgetbox.css');
+                    loadRes('http://developer.renren.com/assets/jebe.js');
+                    loadRes('http://developer.renren.com/assets/widgetbox.css');
                 }
             });
         }

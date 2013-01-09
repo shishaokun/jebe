@@ -356,6 +356,9 @@ JebeManager.define(function (src, undefined) {
         getFriendListByZanedHbase : function (params, returnKey, concurrent) {
             return this.newActionRequest('8', params, returnKey, concurrent);
         },
+        getUnknown9: function (params, returnKey, concurrent) {
+            return this.newActionRequest('9', params, returnKey, concurrent);
+        },
         getFriendsListBySocial : function (params, returnKey, concurrent) {
             return this.newActionRequest('10', params, returnKey, concurrent);
         },
@@ -365,10 +368,18 @@ JebeManager.define(function (src, undefined) {
         getJoinedBySocial : function (params, returnKey, concurrent) {
             return this.newActionRequest('12', params, returnKey, concurrent);
         },
+        getUnknown13: function (params, returnKey, concurrent) {
+            return this.newActionRequest('13', params, returnKey, concurrent);
+        },
         getFriendListByVideolikeHbase : function (params, returnKey, concurrent) {
             return this.newActionRequest('14', params, returnKey, concurrent);
         }
-        
+    }
+    var method = [];
+    for (var i = 1 ; i < 15 ; i += 1) {
+        JebeApi.PersonRequest[method[i]] = function (params, returnKey, concurrent) {
+            return this.newActionRequest(i.toString(), params, returnKey, concurrent);
+        }
     }
     
     JebeApi.ActionRequest = {
@@ -533,12 +544,34 @@ JebeManager.define(function (src, undefined) {
     }
     /*************************************************************************************************/
 
-    var extend = function (obj1, obj2) {
-        for (var key in obj2) {
-            obj1[key] = obj2[key];
+    var Utils = {
+
+        tmpl: function (template, data) {
+            console.log(template)
+            template = template.replace(/(?:[\r\n])|(?:\s{2,})/mg, '').replace(/'/mg, "\"").replace(/{{([#/]?)([^{}]*?)}}/mg, function (s, p1, p2) {
+                if (p1 === '#') {
+                    return "'+(function(){if("+p2+"){return '";
+                }
+                else if (p1 === '/') {
+                    return "'}else{return ''}})()+'";
+                }
+                else {
+                    return "'+"+p2+"+'";
+                }
+            });
+            console.log("with(obj){return '" + template + "'}")
+            return new Function("obj", "with(obj){return '" + template + "'}")(data);
+        },
+
+        extend: function (obj1, obj2) {
+            for (var key in obj2) {
+                obj1[key] = obj2[key];
+            }
+            return obj1
         }
-        return obj1
     };
+
+    //console.log(Utils.tmpl('a{{#b}}<p>{{a}}</p>{{/b}}', {a: 1, b: false}))
     
     var Jebe = Class({
 
@@ -566,36 +599,32 @@ JebeManager.define(function (src, undefined) {
             });
         },
 
-        render: function (tmpl) {
+        render: function (template) {
             var d1 = new Date()
-            //console.log(tmpl, this.templateData)
+            //console.log(template, this.templateData)
             var i, j, adzone, html, script, rr = +new Date(), self = this;
             var stat = 0;
-            for (i = 0 ; i < tmpl.length ; i += 1) {
-                if (tmpl[i].widget_id !== '100') {
+            for (i = 0 ; i < template.length ; i += 1) {
+                if (template[i].widget_id != '36') {
                     stat ++;
                     continue;
                 }
-                console.log(tmpl[i], this.templateData[i].ads)
-                adzone = $('#'+this.adzonePrex + tmpl[i].adzone_id)[0];
+                adzone = $('#'+this.adzonePrex + template[i].adzone_id)[0];
                 script = document.createElement('script');
                 try {
-                    script.appendChild(document.createTextNode('window["'+this.randJSRepoVar+'"]['+tmpl[i].adzone_id+']=(function($, data){'+tmpl[i].js+'})'));
+                    script.appendChild(document.createTextNode('window["'+this.randJSRepoVar+'"]['+template[i].adzone_id+']=(function($, data){'+template[i].js+'})'));
                 }
                 catch (e) {
-                    script.text = 'window["'+this.randJSRepoVar+'"]['+tmpl[i].adzone_id+']=(function($, data){'+tmpl[i].js+'})';
+                    script.text = 'window["'+this.randJSRepoVar+'"]['+template[i].adzone_id+']=(function($, data){'+template[i].js+'})';
                 }
                 adzone.appendChild(script);
                 var d2 = new Date()
                 html = '';
-                //html = '<div class="jebe-utils">'+(?'':'')+'<a data-index="'+i+'" class="jebe-close" href="#"></a></div>';
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
                     //'ad'+this.templateData[i].ads[j].ad_param.creative_id+'_'+rr+'_adbox'+this.templateData[i].adzone_id
-                    //html += tmpl[i].html.replace(new RegExp(tmpl[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
-                    this.templateData[i].ads[j].ad_param = extend(this.templateData[i].ads[j].ad_param, eval("("+this.templateData[i].ads[j].widget+")"));
-                    html += tmpl[i].html.replace(/{{(.+?)}}/mg, function (s, p) {
-                        return new Function('obj', 'with(obj){return '+p+'}')(self.templateData[i].ads[j].ad_param);
-                    });
+                    //html += template[i].html.replace(new RegExp(template[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
+                    this.templateData[i].ads[j].ad_param = Utils.extend(this.templateData[i].ads[j].ad_param, eval("("+this.templateData[i].ads[j].widget+")"));
+                    html += Utils.tmpl(template[i].html, this.templateData[i].ads[j].ad_param);
                     html = '<div class="jebe-ad" id="ad' + self.templateData[i].ads[j].ad_param.creative_id + '"><div class="jebe-utils"></div><div class="jebe-ad-body">' + html + '</div></div>';
                 }
                 adzone.innerHTML = html;
@@ -610,11 +639,11 @@ JebeManager.define(function (src, undefined) {
                         setTimeout(function () {
                             init.apply(window, args);
                         }, 0);
-                    })(window[this.randJSRepoVar][tmpl[i].adzone_id], [this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id), this.templateData[i].ads[j].ad_param]);
+                    })(window[this.randJSRepoVar][template[i].adzone_id], [this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id), this.templateData[i].ads[j].ad_param]);
                 }
             }
             delete window[this.randJSRepoVar];
-            if (stat === tmpl.length) {location.href = location.href}
+            if (stat === template.length) {location.href = location.href}
             $('#log')[0].innerHTML = (new Date() - d1) + '-' + (d2-d1)
         },
 
