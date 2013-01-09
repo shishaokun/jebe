@@ -205,11 +205,11 @@ JebeManager.define(function (src, undefined) {
                 var event = {};
                 event.originEvent = e;
                 event.target = e.target || e.srcElement;
-                event.prevetDefault = function () {
-                    return e.prevetDefault ?  e.prevetDefault() : (e.returnValue = false);
+                event.preventDefault = function () {
+                    return e.preventDefault ?  e.preventDefault() : (e.returnValue = false);
                 }
                 event.stopPropagation = function () {
-                    return e.stopPropagation ? e.stopPropagation() : (e.cancelBubble = true)
+                    return e.stopPropagation ? e.stopPropagation() : (e.cancelBubble = true);
                 }
                 return event;
             },
@@ -231,7 +231,7 @@ JebeManager.define(function (src, undefined) {
                     }
                 }
             }
-        }
+        };
 
         jQueryLite.prototype = {
 
@@ -264,290 +264,10 @@ JebeManager.define(function (src, undefined) {
 
     })();
 
-    var PubSub = {
-        subscribe: function(ev, callback) {
-            var calls = this._callbacks || (this._callbacks = {});
-            (this._callbacks[ev] || (this._callbacks[ev] = [])).push(callback);
-            return this;
-        },
-        publish: function() {
-            var args = Array.prototype.slice.call(arguments, 0);
-            var ev   = args.shift();
-            var list, calls, i, l;
-            if (!(calls = this._callbacks)) return this;
-            if (!(list  = this._callbacks[ev])) return this;
-            for (i = 0, l = list.length; i < l; i++)
-            list[i].apply(this, args);
-            return this;
-        }
-    };
-
-    /***********************************************API***********************************************/
-    var JebeApi = {};
-    
-    JebeApi.RestRequests = function (adID, widgetID, widgetVersion) {
-        this.uid = '109224573';
-        this.adID = adID;
-        this.widgetID = widgetID;
-        this.widgetVersion = widgetVersion;
-        this.requests = [];
-    }
-    
-    JebeApi.RestRequests.prototype = {
-        add : function (request) {
-            request.uid = this.uid;
-            request.adID = this.adID;
-            request.widgetID = this.widgetID;
-            request.widgetVersion = this.widgetVersion;
-            this.requests.push(request);
-        },
-        send : function (onSuccess, onError) {
-            var This = this;
-            if (this.requests.length > 0) {
-                if (!onSuccess)
-                    onSuccess = function () {};
-                if (!onError)
-                    onError = function () {};
-                new XN.net.xmlhttp({
-                    url : "http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/execute.htm",
-                    method : 'post',
-                    data : '&content=' + encodeURIComponent(XN.JSON.build(This.requests)),
-                    onSuccess : onSuccess,
-                    onError : onError
-                });
-            }
-        }
-    }
-    
-    JebeApi.RequestParam = function (serviceType, methodType, parameter, key, concurrent) {
-        this.serviceType = serviceType;
-        this.methodType = methodType;
-        this.parameter = parameter;
-        this.key = key;
-        this.concurrent = false;
-    }
-    
-    JebeApi.PersonRequest = {
-        serviceType : '1',
-        newActionRequest : function (methodType, param, returnKey, concurrent) {
-            return new JebeApi.RequestParam(this.serviceType, methodType, param, returnKey, concurrent);
-        },
-        getFriendList : function (params, returnKey, concurrent) {
-            return this.newActionRequest('1', params, returnKey, concurrent);
-        },
-        getFriendListByFans : function (params, returnKey, concurrent) {
-            return this.newActionRequest('2', params, returnKey, concurrent);
-        },
-        getFriendListByIsFans : function (params, returnKey, concurrent) {
-            return this.newActionRequest('3', params, returnKey, concurrent);
-        },
-        getFriendListByVoted : function (params, returnKey, concurrent) {
-            return this.newActionRequest('4', params, returnKey, concurrent);
-        },
-        getFriendListByZaned : function (params, returnKey, concurrent) {
-            return this.newActionRequest('5', params, returnKey, concurrent);
-        },
-        getFriendListByFansXce : function (params, returnKey, concurrent) {
-            return this.newActionRequest('6', params, returnKey, concurrent);
-        },
-        getFriendListByVotedHbase : function (params, returnKey, concurrent) {
-            return this.newActionRequest('7', params, returnKey, concurrent);
-        },
-        getFriendListByZanedHbase : function (params, returnKey, concurrent) {
-            return this.newActionRequest('8', params, returnKey, concurrent);
-        },
-        getUnknown9: function (params, returnKey, concurrent) {
-            return this.newActionRequest('9', params, returnKey, concurrent);
-        },
-        getFriendsListBySocial : function (params, returnKey, concurrent) {
-            return this.newActionRequest('10', params, returnKey, concurrent);
-        },
-        getCountBySocial : function (params, returnKey, concurrent) {
-            return this.newActionRequest('11', params, returnKey, concurrent);
-        },
-        getJoinedBySocial : function (params, returnKey, concurrent) {
-            return this.newActionRequest('12', params, returnKey, concurrent);
-        },
-        getUnknown13: function (params, returnKey, concurrent) {
-            return this.newActionRequest('13', params, returnKey, concurrent);
-        },
-        getFriendListByVideolikeHbase : function (params, returnKey, concurrent) {
-            return this.newActionRequest('14', params, returnKey, concurrent);
-        }
-    }
-    var method = [];
-    for (var i = 1 ; i < 15 ; i += 1) {
-        JebeApi.PersonRequest[method[i]] = function (params, returnKey, concurrent) {
-            return this.newActionRequest(i.toString(), params, returnKey, concurrent);
-        }
-    }
-    
-    JebeApi.ActionRequest = {
-        serviceType : '2',
-        newActionRequest : function (methodType, param, returnKey, concurrent) {
-            return new JebeApi.RequestParam(this.serviceType, methodType, param, returnKey, concurrent);
-        },
-        smsRequest : function (params, returnKey, concurrent) {
-            return this.newActionRequest('4', params, returnKey, concurrent);
-        },
-        becomeFansRequest : function (params, returnKey, concurrent) {
-            return this.newActionRequest('5', params, returnKey, concurrent);
-        },
-        isFans : function (params, returnKey, concurrent) {
-            return this.newActionRequest('6', params, returnKey, concurrent);
-        },
-        getFansCount : function (params, returnKey, concurrent) {
-            return this.newActionRequest('7', params, returnKey, concurrent);
-        },
-        getPageName : function (params, returnKey, concurrent) {
-            return this.newActionRequest('8', params, returnKey, concurrent);
-        },
-        vote : function (params, returnKey, concurrent) {
-            return this.newActionRequest('9', params, returnKey, concurrent);
-        },
-        getVoteCounts : function (params, returnKey, concurrent) {
-            return this.newActionRequest('10', params, returnKey, concurrent);
-        },
-        zan : function (params, returnKey, concurrent) {
-            return this.newActionRequest('11', params, returnKey, concurrent);
-        },
-        getZanCounts : function (params, returnKey, concurrent) {
-            return this.newActionRequest('12', params, returnKey, concurrent);
-        },
-        sendWidgetClickLog : function (params, returnKey, concurrent) {
-            return this.newActionRequest('15', params, returnKey, concurrent);
-        },
-        sendVideoLike : function (params, returnKey, concurrent) {
-            return this.newActionRequest('16', params, returnKey, concurrent);
-        },
-        getVideo : function (params, returnKey, concurrent) {
-            return this.newActionRequest('17', params, returnKey, concurrent);
-        },
-        setVideo : function (params, returnKey, concurrent) {
-            return this.newActionRequest('18', params, returnKey, concurrent);
-        },
-        
-        AddPage2Friend : function (params, returnKey, concurrent) {
-            return this.newActionRequest('19', params, returnKey, concurrent);
-        },
-        
-        likeAd : function (params, returnKey, concurrent) {
-            return this.newActionRequest('20', params, returnKey, concurrent);
-        },
-        unLikeAd : function (params, returnKey, concurrent) {
-            return this.newActionRequest('21', params, returnKey, concurrent);
-        },
-        getAdLikeCount : function (params, returnKey, concurrent) {
-            return this.newActionRequest('22', params, returnKey, concurrent);
-        },
-        getLikedAds : function (params, returnKey, concurrent) {
-            return this.newActionRequest('23', params, returnKey, concurrent);
-        },
-        blockAd : function (params, returnKey, concurrent) {
-            return this.newActionRequest('24', params, returnKey, concurrent);
-        },
-        
-        sendFeed : function (params, returnKey, concurrent) {
-            return this.newActionRequest('25', params, returnKey, concurrent);
-        }
-    }
-    
-    JebeApi.DataRequest = {
-        serviceType : '3',
-        newDataRequest : function (methodType, param, returnKey, concurrent) {
-            return new JebeApi.RequestParam(this.serviceType, methodType, param, returnKey, concurrent);
-        },
-        newAddRequest : function (primaryKey, key, value, returnKey, concurrent) {
-            //add
-            return this.newDataRequest('1', {
-                'primaryKey' : primaryKey,
-                'key' : key,
-                'value' : value
-            }, returnKey, concurrent);
-        },
-        newAddMuchRequest : function (primaryKey, map, returnKey, concurrent) {
-            //addMuch
-            return this.newDataRequest('2', {
-                'primaryKey' : primaryKey,
-                'map' : map
-            }, returnKey, concurrent);
-        },
-        newRemoveRequest : function (primaryKey, key, returnKey, concurrent) {
-            //remove
-            return this.newDataRequest('3', {
-                'primaryKey' : primaryKey,
-                'key' : key
-            }, returnKey, concurrent);
-        },
-        newRemoveMuchRequest : function (primaryKey, returnKey, concurrent) {
-            //remove
-            return this.newDataRequest('4', {
-                'primaryKey' : primaryKey
-            }, returnKey, concurrent);
-        },
-        newGetRequest : function (primaryKey, key, returnKey, concurrent) {
-            //get
-            return this.newDataRequest('5', {
-                'primaryKey' : primaryKey,
-                'key' : key
-            }, returnKey, concurrent);
-        },
-        newGetMuchRequest : function (primaryKey, returnKey, concurrent) {
-            //getMuch
-            return this.newDataRequest('6', {
-                'primaryKey' : primaryKey
-            }, returnKey, concurrent);
-        },
-        newAddOneRequest : function (primaryKey, returnKey, concurrent) {
-            //addOne
-            return this.newDataRequest('7', {
-                'primaryKey' : primaryKey
-            }, returnKey, concurrent);
-        },
-        voteRequest : function (primaryKey, map, returnKey, concurrent) {
-            //addMuch
-            return this.newDataRequest('8', {
-                'primaryKey' : primaryKey,
-                'map' : map
-            }, returnKey, concurrent);
-        },
-        getVoteCountRequest : function (primaryKey, key, returnKey, concurrent) {
-            //addOne
-            return this.newDataRequest('9', {
-                'primaryKey' : primaryKey,
-                'key' : key
-            }, returnKey, concurrent);
-        },
-        zanRequest : function (primaryKey, map, returnKey, concurrent) {
-            //addMuch
-            return this.newDataRequest('10', {
-                'primaryKey' : primaryKey,
-                'map' : map
-            }, returnKey, concurrent);
-        },
-        getZanCountRequest : function (primaryKey, key, returnKey, concurrent) {
-            //addOne
-            return this.newDataRequest('11', {
-                'primaryKey' : primaryKey,
-                'key' : key
-            }, returnKey, concurrent);
-        },
-        getQuestionaryList : function (params, returnKey, concurrent) {
-            //addOne
-            return this.newDataRequest('13', params, returnKey, concurrent);
-        },
-        answerQuestionary : function (params, returnKey, concurrent) {
-            //addOne
-            return this.newDataRequest('16', params, returnKey, concurrent);
-        }
-        
-    }
-    /*************************************************************************************************/
-
     var Utils = {
 
         tmpl: function (template, data) {
-            console.log(template)
+            //console.log(template)
             template = template.replace(/(?:[\r\n])|(?:\s{2,})/mg, '').replace(/'/mg, "\"").replace(/{{([#/]?)([^{}]*?)}}/mg, function (s, p1, p2) {
                 if (p1 === '#') {
                     return "'+(function(){if("+p2+"){return '";
@@ -559,7 +279,7 @@ JebeManager.define(function (src, undefined) {
                     return "'+"+p2+"+'";
                 }
             });
-            console.log("with(obj){return '" + template + "'}")
+            //console.log("with(obj){return '" + template + "'}")
             return new Function("obj", "with(obj){return '" + template + "'}")(data);
         },
 
@@ -568,6 +288,24 @@ JebeManager.define(function (src, undefined) {
                 obj1[key] = obj2[key];
             }
             return obj1
+        },
+
+        PubSub: {
+            sub: function(ev, callback) {
+                var calls = this._callbacks || (this._callbacks = {});
+                (this._callbacks[ev] || (this._callbacks[ev] = [])).push(callback);
+                return this;
+            },
+            pub: function() {
+                var args = Array.prototype.slice.call(arguments, 0);
+                var ev   = args.shift();
+                var list, calls, i, l;
+                if (!(calls = this._callbacks)) return this;
+                if (!(list  = this._callbacks[ev])) return this;
+                for (i = 0, l = list.length; i < l; i++)
+                list[i].apply(this, args);
+                return this;
+            }
         }
     };
 
@@ -600,7 +338,6 @@ JebeManager.define(function (src, undefined) {
         },
 
         render: function (template) {
-            var d1 = new Date()
             //console.log(template, this.templateData)
             var i, j, adzone, html, script, rr = +new Date(), self = this;
             var stat = 0;
@@ -618,9 +355,10 @@ JebeManager.define(function (src, undefined) {
                     script.text = 'window["'+this.randJSRepoVar+'"]['+template[i].adzone_id+']=(function($, data){'+template[i].js+'})';
                 }
                 adzone.appendChild(script);
-                var d2 = new Date()
                 html = '';
+                console.log('template', template[i])
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
+                    console.log('data', this.templateData[i].ads[j].ad_param)
                     //'ad'+this.templateData[i].ads[j].ad_param.creative_id+'_'+rr+'_adbox'+this.templateData[i].adzone_id
                     //html += template[i].html.replace(new RegExp(template[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
                     this.templateData[i].ads[j].ad_param = Utils.extend(this.templateData[i].ads[j].ad_param, eval("("+this.templateData[i].ads[j].widget+")"));
@@ -644,11 +382,10 @@ JebeManager.define(function (src, undefined) {
             }
             delete window[this.randJSRepoVar];
             if (stat === template.length) {location.href = location.href}
-            $('#log')[0].innerHTML = (new Date() - d1) + '-' + (d2-d1)
         },
 
         refresh: function () {
-            PubSub.publish('refresh', this.getAttribute('data-index'));
+            Utils.PubSub.pub('refresh', this.getAttribute('data-index'));
             return false;
         },
 
@@ -674,7 +411,7 @@ JebeManager.define(function (src, undefined) {
 
             var self = this;
 
-            PubSub.subscribe('refresh', function (index) {
+            Utils.PubSub.sub('refresh', function (index) {
                 self.load('refresh_source='+index);
             });
 
@@ -819,6 +556,106 @@ JebeManager.define(function (src, undefined) {
         }
 
     });
+
+    var JebeApi = {
+
+        RestRequests: Class({
+
+            init: function (adID, widgetID, widgetVersion) {
+                this.uid = '109224573';
+                this.adID = adID;
+                this.widgetID = widgetID;
+                this.widgetVersion = widgetVersion;
+                this.requests = [];
+            },
+
+            add : function (request) {
+                request.uid = this.uid;
+                request.adID = this.adID;
+                request.widgetID = this.widgetID;
+                request.widgetVersion = this.widgetVersion;
+                this.requests.push(request);
+            },
+
+            send : function (onSuccess, onError) {
+                var This = this;
+                if (this.requests.length > 0) {
+                    if (!onSuccess)
+                        onSuccess = function () {};
+                    if (!onError)
+                        onError = function () {};
+                    new XN.net.xmlhttp({
+                        url : "http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/execute.htm",
+                        method : 'post',
+                        data : '&content=' + encodeURIComponent(XN.JSON.build(This.requests)),
+                        onSuccess : onSuccess,
+                        onError : onError
+                    });
+                }
+            }
+        }),
+
+        RequestParam: function (serviceType, methodType, parameter, key, concurrent) {
+            this.serviceType = serviceType;
+            this.methodType = methodType;
+            this.parameter = parameter;
+            this.key = key;
+            this.concurrent = false;
+        },
+
+        PersonRequest: (function () {
+            var obj = {};
+            var method = ['getFriendList', 'getFriendListByFans', 'getFriendListByIsFans', 'getFriendListByVoted', 'getFriendListByZaned',
+                            'getFriendListByFansXce', 'getFriendListByVotedHbase', 'getFriendListByZanedHbase', 'p9', 'getFriendsListBySocial',
+                            'getCountBySocial', 'getJoinedBySocial', 'p13', 'getFriendListByVideolikeHbase'];
+            for (var i = 1 ; i < 15 ; i += 1) {
+                obj[method[i]] = function (params, returnKey, concurrent) {
+                    return new JebeApi.RequestParam('1', i.toString(), param, returnKey, concurrent);
+                }
+            }
+            return obj;
+        })(),
+
+        ActionRequest: (function () {
+            var obj = {};
+            var method = ['smsRequest', 'becomeFansRequest',
+                            'isFans', 'getFansCount', 'getPageName', 'vote', 'getVoteCounts',
+                            'zan', 'getZanCounts', 'p13', 'p14', 'sendWidgetClickLog',
+                            'sendVideoLike', 'getVideo', 'setVideo', 'AddPage2Friend', 'likeAd',
+                            'unLikeAd', 'getAdLikeCount', 'getLikedAds', 'blockAd', 'sendFeed'];
+            for (var i = 4 ; i < 26 ; i += 1) {
+                obj[method[i]] = function (params, returnKey, concurrent) {
+                    return new JebeApi.RequestParam('2', i.toString(), param, returnKey, concurrent);
+                }
+            }
+            return obj;
+        })(),
+
+        DataRequest: (function () {
+            var obj = {};
+            var method = ['newAddRequest', 'newAddMuchRequest', 'newRemoveRequest', 'newRemoveMuchRequest', 'newGetRequest',
+                            'newGetMuchRequest', 'newAddOneRequest', 'voteRequest', 'getVoteCountRequest', 'zanRequest',
+                            'getZanCountRequest', 'p12', 'getQuestionaryList', 'p14', 'p15',
+                            'answerQuestionary'];
+            for (var i = 1 ; i < 17 ; i += 1) {
+                obj[method[i]] = function () {
+                    var args = Array.prototype.slice.call(arguments, 0);
+                    var concurrent = args.pop();
+                    var returnKey = args.pop();
+                    var params = {};
+                    if (Object.prototype.toString.call(args[0]) === '[object Object]') {
+                        params = args[0];
+                    }
+                    else {
+                        Utils.extend(params, args);
+                    }
+                    return new JebeApi.RequestParam('3', i.toString(), params, returnKey, concurrent);
+                }
+            }
+            return obj;
+        })()
+
+    }; 
 
     var Close = Class({
 
