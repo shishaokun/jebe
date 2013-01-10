@@ -241,7 +241,7 @@ JebeManager.define(function (src, undefined) {
                         this[i].addEventListener(type, jQueryLite.Event.on(handler), false);
                     }
                     else {
-                        this[i].attachEvent('on' + type, type, jQueryLite.Event.on(handler));
+                        this[i].attachEvent('on' + type, jQueryLite.Event.on(handler));
                     }
                 }
             },
@@ -268,7 +268,7 @@ JebeManager.define(function (src, undefined) {
 
         tmpl: function (template, data) {
             //console.log(template)
-            template = template.replace(/(?:[\r\n])|(?:\s{2,})/mg, '').replace(/'/mg, "\"").replace(/{{([#/]?)([^{}]*?)}}/mg, function (s, p1, p2) {
+            template = template.replace(/[\r\t\n]/mg, '').replace(/'/mg, "\"").replace(/{{([#/]?)([^{}]*?)}}/mg, function (s, p1, p2) {
                 if (p1 === '#') {
                     return "'+(function(){if("+p2+"){return '";
                 }
@@ -342,7 +342,7 @@ JebeManager.define(function (src, undefined) {
         },
 
         render: function (template) {
-            console.log(template, this.templateData)
+            //console.log(template, this.templateData)
             var i, j, adzone, html, script, rr = +new Date(), self = this;
             var stat = 0;
             for (i = 0 ; i < template.length ; i += 1) {
@@ -350,7 +350,7 @@ JebeManager.define(function (src, undefined) {
                     stat ++;
                     //continue;
                 }
-                console.log('template', template[i])
+                //console.log('template', template[i])
                 adzone = $('#'+this.adzonePrex + template[i].adzone_id)[0];
                 script = document.createElement('script');
                 try {
@@ -362,7 +362,7 @@ JebeManager.define(function (src, undefined) {
                 adzone.appendChild(script);
                 html = '';
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
-                    console.log('data', this.templateData[i].ads[j])
+                    //console.log('data', this.templateData[i].ads[j])
                     //'ad'+this.templateData[i].ads[j].ad_param.creative_id+'_'+rr+'_adbox'+this.templateData[i].adzone_id
                     //html += template[i].html.replace(new RegExp(template[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
                     this.templateData[i].ads[j].ad_param = Utils.extend(this.templateData[i].ads[j].ad_param, eval("("+this.templateData[i].ads[j].widget+")"));
@@ -370,7 +370,7 @@ JebeManager.define(function (src, undefined) {
                     html = '<div class="jebe-ad" id="ad' + self.templateData[i].ads[j].ad_param.creative_id + '"><div class="jebe-utils"></div><div class="jebe-ad-body">' + html + '</div></div>';
                 }
                 adzone.innerHTML = html;
-                if (adzone.getAttribute('controls') !== undefined) {
+                if (adzone.getAttribute('controls') !== null) {
                     var btnNext = document.createElement('a');
                     btnNext.className = 'jebe-next';
                     $('.jebe-utils', adzone)[0].appendChild(btnNext);
@@ -384,7 +384,12 @@ JebeManager.define(function (src, undefined) {
                     })(window[this.randJSRepoVar][template[i].adzone_id], [this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id), this.templateData[i].ads[j].ad_param]);
                 }
             }
-            delete window[this.randJSRepoVar];
+            try {
+                delete window[this.randJSRepoVar];
+            }
+            catch (e) {
+                window[this.randJSRepoVar] = undefined;
+            }
             //if (stat === template.length) {location.href = location.href}
         },
 

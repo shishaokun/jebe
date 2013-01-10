@@ -2,23 +2,8 @@
 <Module>
         <Content view="runtime">
                 <Init>
-                    <![CDATA[
-                    						function clearCookie(){ 
-							var keys=document.cookie.match(/[^ =;]+(?=\=)/g); 
-							
-							if (keys) { 
-								for (var i = keys.length; i--;) {
-									if(keys[i].indexOf("jebe_widget_zaned")==0)
-										document.cookie=keys[i]+'=0;expires=' + new Date(0).toUTCString(); 
-								}
-							}
-						};
-						<xn:template category="common" unit="function" version="2.0.0" part="runtime"/>
-							<xn:template category="like" unit="common" version="1.0.0" part="r_js"/>
-                            <xn:template category="common" unit="social" version="1.0.0" part="r_js"/>
-
-                    adparam = data;
-                    query = $;
+					<![CDATA[
+						var init = function (data, adparam, query) {
                            	<xn:template category="common" unit="title" version="2.0.0" part="r_init"/>	
 						    <xn:template category="pic" unit="pic240_160" version="1.0.0" part="r_init"/> 	
 							<xn:template category="button" unit="common" version="2.0.0" part="r_init" params="{upperCase:'Attend',lowerCase:'attend',isNielsen:'',type:4}"/>
@@ -40,7 +25,21 @@
 
 
 
-
+    };
+    init(data, data, $)
+						function clearCookie(){ 
+							var keys=document.cookie.match(/[^ =;]+(?=\=)/g); 
+							
+							if (keys) { 
+								for (var i = keys.length; i--;) {
+									if(keys[i].indexOf("jebe_widget_zaned")==0)
+										document.cookie=keys[i]+'=0;expires=' + new Date(0).toUTCString(); 
+								}
+							}
+						};
+						<xn:template category="common" unit="function" version="2.0.0" part="runtime"/>
+							<xn:template category="like" unit="common" version="1.0.0" part="r_js"/>
+							<xn:template category="common" unit="social" version="1.0.0" part="r_js"/>
 					]]>
                 </Init>
 				<![CDATA[
