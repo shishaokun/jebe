@@ -98,7 +98,10 @@
         src: null,
         JebeLoader: null,
         define: function (fn) {
-            this.JebeLoader = new fn(this.src);
+            this.JebeLoader = new fn({
+                epbSrc: this.src,
+                userId: XN.cookie.get('id')
+            });
         },
         load: function (r) {
             var src = 'http://ebp.renren.com/ebpn/show?var=jebe_json&t=' + +new Date(), self = this;

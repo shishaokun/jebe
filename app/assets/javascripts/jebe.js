@@ -1,4 +1,4 @@
-JebeManager.define(function (src, undefined) {
+JebeManager.define(function (globalOptions, undefined) {
 
     var Class = function () {
         var Class = function () {
@@ -95,10 +95,17 @@ JebeManager.define(function (src, undefined) {
                 if (!parent.push) {
                     parent = [parent];
                 }
-                var section = /\S+\s*/.exec(selector);
+                if (selector.indexOf(',') > -1) {
+                    var section = selector.split(','), result = [];
+                    for (var i = 0, len = section.length ; i < len ; i++) {
+                        result = result.concat(query(section[i], parent));
+                    }
+                    return query('', result);
+                }
+                var section = /(\S+?)\s*/.exec(selector);
                 if (section) {
                     var remain = selector.slice(section[0].length);
-                    section = section[0].replace(/\s+$/, '');
+                    section = section[1];
                     var result = [];
                     var id = /#([^\[\.]+)/.exec(section);
                     if (id) {
@@ -165,17 +172,16 @@ JebeManager.define(function (src, undefined) {
                     return query(remain, result);
                 }
                 else {
-                    var obj = {};
                     var a = [];
-                    for (var j = 0, jLen = parent.length ; j < jLen ; j++) {
-                        var item = parent[j];
+                    for (var i = 0, len = parent.length ; i < len ; i++) {
+                        var item = parent[i];
                         if (item.uniqueId === undefined) {
                             item.uniqueId = 1;
                             a.push(item);
                         }
                     }
-                    for (j = 0, jLen = a.length ; j < jLen ; j++) {
-                        a[j].uniqueId = undefined;
+                    for (i = 0, len = a.length ; i < len ; i++) {
+                        delete a[i].uniqueId;
                     }
                     return a;
                 }
@@ -187,6 +193,9 @@ JebeManager.define(function (src, undefined) {
             var elements;
             if (selector.nodeType) {
                 elements = [selector];
+            }
+            else if (selector.length && selector.nodeType) {
+                elements = selector;
             }
             else if (typeof selector === 'string') {
                 elements = query(selector, context);
@@ -233,6 +242,66 @@ JebeManager.define(function (src, undefined) {
             }
         };
 
+        jQueryLite.Ajax = (function () {
+
+            function createXMLHttpObject() {
+                var XMLHttpFactories = [
+                    function () {return new XMLHttpRequest()},
+                    function () {return new ActiveXObject("Msxml2.XMLHTTP")},
+                    function () {return new ActiveXObject("Msxml3.XMLHTTP")},
+                    function () {return new ActiveXObject("Microsoft.XMLHTTP")}
+                ];
+
+                var xmlhttp = false, i, len;
+                for (i = 0, len = XMLHttpFactories.length ; i < len ; i += 1) {
+                    try {
+                        xmlhttp = XMLHttpFactories[i]();
+                    }
+                    catch (e) {
+                        continue;
+                    }
+                    break;
+                }
+
+                createXMLHttpObject = XMLHttpFactories[i];
+                return xmlhttp;
+            }
+
+            function stringify(parameters) {
+                var params = [], p;
+                for(p in parameters) {
+                    params.push(encodeURIComponent(p) + '=' + encodeURIComponent(parameters[p]));
+                }
+                return params.join('&');
+            }
+
+            return function (method, url, data, success, error) {
+                var client = createXMLHttpObject(), data;
+                method = method.toLowerCase();
+                if (typeof data === 'object') {
+                    data = stringify(data);
+                }
+                if (method === 'get' && data) {
+                    url += '?' + data;
+                    data = null;
+                }
+                client.onreadystatechange = function () {
+                    if (client.readyState === 4) {
+                        if ((client.status >= 200 && client.status < 300) || client.status == 304) {
+                            success && success(client);
+                        }
+                        else {
+                            error && error(client);
+                        }
+                    }
+                };
+                client.open(method, url, true);
+                method === 'post' && client.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                client.setRequestHeader('ajax', 'true');
+                client.send(data);
+            };
+        })();
+
         jQueryLite.prototype = {
 
             on: function (type, handler) {
@@ -266,32 +335,68 @@ JebeManager.define(function (src, undefined) {
 
     var Utils = {
 
-        tmpl: function (template, data) {
-            //console.log(template)
-            template = template.replace(/[\r\t\n]/mg, '').replace(/'/mg, "\"").replace(/{{([#/]?)([^{}]*?)}}/mg, function (s, p1, p2) {
-                if (p1 === '#') {
-                    return "'+(function(){if("+p2+"){return '";
-                }
-                else if (p1 === '/') {
-                    return "'}else{return ''}})()+'";
-                }
-                else {
-                    return "'+"+p2+"+'";
-                }
-            });
-            try {
-            return new Function("obj", "with(obj){return '" + template + "'}")(data);
-            }
-            catch (e){
-                console.log("with(obj){return '" + template + "'}")
-            }
-        },
+        tmpl: (function () {
+            var tmplRDelimiter = /{{([#/]?)([^{}]*?)}}/mg,
+                tmplRSpace = /[\r\t\n]/mg,
+                tmplRQuote = /'/mg,
+                tmplRTrim = /^["'\s]*|["'\s]*$/g,
+                geneRealClickUrls = function(data, url, abflag, tcount, noEngineUrl) {
+                    if (!url) {url = data.titleClickUrl;}
+                    if(data && data.socialType && data.socialType === 12 && data.socialId) {
+                        if (url.indexOf('?') >= 0) {
+                            url = url + '&token=' + XN.get_check;
+                        }
+                        else {
+                            url =  url + '?token=' + XN.get_check;
+                        }
+                        url = "http://page.renren.com/api/rd?pid="+data.socialId+"&url="+encodeURIComponent(url); 
+                    }
+                    if(abflag != "yuliangdownflash" ){
+                        abflag = 'abflag=' + abflag + '';
+                        if (tcount === 0) {
+                            abflag += '&statID=ad_'+data.adzoneId+'_'+data.creative_id+'&level='+tcount;
+                        }
+                        url += (url.indexOf('?') > -1 ? '&' : '?') + abflag;
+                    }
+                    if (data.click_url != '' && !noEngineUrl) {
+                        return data.click_url +  encodeURIComponent(url);
+                    }
+                    else {
+                        return url;
+                    }
+                };
 
-        extend: function (obj1, obj2) {
-            for (var key in obj2) {
-                obj1[key] = obj2[key];
+            return function (template, data) {
+                template = template.replace(tmplRSpace, '').replace(tmplRQuote, "\"").replace(tmplRDelimiter, function (s, p1, p2) {
+                    if (p1 === '#') {
+                        return "'+(function(){if("+p2+"){return '";
+                    }
+                    else if (p1 === '/') {
+                        return "'}else{return ''}})()+'";
+                    }
+                    else if (p2.indexOf(',') > -1) {
+                        var args = p2.split(','), opt = {};
+                        for (var i = 1, arg ; i < args.length ; i += 1) {
+                            arg = args[i].split('=');
+                            opt[arg[0].replace(tmplRTrim, '')] = arg[1].replace(tmplRTrim, '');
+                        }
+                        return "'+(function(){return '"+geneRealClickUrls.apply(null, [data, data[args.shift()], opt.abflag, parseInt(opt.tcount), opt.noEngineUrl])+"'})()+'";
+                    }
+                    else {
+                        return "'+("+p2+")+'";
+                    }
+                });
+                return new Function("obj", "with(obj){return '" + template + "'}")(data);
             }
-            return obj1
+        })(),
+
+        extend: function (obj, objn) {
+            for (var i = 1, key ; i < arguments.length ; i += 1) {
+                for (key in arguments[i]) {
+                    obj[key] = arguments[i][key];
+                }
+            }
+            return obj;
         },
 
         PubSub: {
@@ -312,8 +417,6 @@ JebeManager.define(function (src, undefined) {
             }
         }
     };
-
-    //console.log(Utils.tmpl('a{{#b}}<p>{{a}}</p>{{/b}}', {a: 1, b: false}))
     
     var Jebe = Class({
 
@@ -346,11 +449,11 @@ JebeManager.define(function (src, undefined) {
             var i, j, adzone, html, script, rr = +new Date(), self = this;
             var stat = 0;
             for (i = 0 ; i < template.length ; i += 1) {
-                if (template[i].widget_id != '36') {
+                if (template[i].widget_id != '43') {
                     stat ++;
-                    //continue;
+                    continue;
                 }
-                //console.log('template', template[i])
+                console.log('template', template[i])
                 adzone = $('#'+this.adzonePrex + template[i].adzone_id)[0];
                 script = document.createElement('script');
                 try {
@@ -362,12 +465,13 @@ JebeManager.define(function (src, undefined) {
                 adzone.appendChild(script);
                 html = '';
                 for (j = 0 ; j < this.templateData[i].ads.length ; j += 1) {
-                    //console.log('data', this.templateData[i].ads[j])
+                    console.log('data', eval("("+this.templateData[i].ads[j].widget+")"), this.templateData[i].ads[j].ad_param)
                     //'ad'+this.templateData[i].ads[j].ad_param.creative_id+'_'+rr+'_adbox'+this.templateData[i].adzone_id
                     //html += template[i].html.replace(new RegExp(template[i].placeholder, 'g'), 'ad'+this.templateData[i].ads[j].ad_param.creative_id);
-                    this.templateData[i].ads[j].ad_param = Utils.extend(this.templateData[i].ads[j].ad_param, eval("("+this.templateData[i].ads[j].widget+")"));
-                    html += Utils.tmpl(template[i].html, this.templateData[i].ads[j].ad_param);
-                    html = '<div class="jebe-ad" id="ad' + self.templateData[i].ads[j].ad_param.creative_id + '"><div class="jebe-utils"></div><div class="jebe-ad-body">' + html + '</div></div>';
+                    this.templateData[i].ads[j].data = Utils.extend({},this.templateData[i].ads[j].ad_param, eval("("+this.templateData[i].ads[j].widget+")"));
+                    this.templateData[i].ads[j].data.userId = globalOptions.userId;
+                    html += Utils.tmpl(template[i].html, this.templateData[i].ads[j].data);
+                    html = '<div class="jebe-ad" id="ad' + self.templateData[i].ads[j].data.creative_id + '"><div class="jebe-utils"></div><div class="jebe-ad-body">' + html + '</div></div>';
                 }
                 adzone.innerHTML = html;
                 if (adzone.getAttribute('controls') !== null) {
@@ -381,7 +485,7 @@ JebeManager.define(function (src, undefined) {
                         setTimeout(function () {
                             init.apply(window, args);
                         }, 0);
-                    })(window[this.randJSRepoVar][template[i].adzone_id], [this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id), this.templateData[i].ads[j].ad_param]);
+                    })(window[this.randJSRepoVar][template[i].adzone_id], [this.factory('ad'+this.templateData[i].ads[j].ad_param.creative_id), this.templateData[i].ads[j].data]);
                 }
             }
             try {
@@ -390,7 +494,7 @@ JebeManager.define(function (src, undefined) {
             catch (e) {
                 window[this.randJSRepoVar] = undefined;
             }
-            //if (stat === template.length) {location.href = location.href}
+            if (stat === template.length) {location.href = location.href}
         },
 
         refresh: function () {
@@ -461,117 +565,12 @@ JebeManager.define(function (src, undefined) {
 
     });
 
-    var Like = Class({
-
-        init: function (opt) {
-            var self = this;
-            this.opt = opt;
-            this.opt.placeholder = $('#ad' + this.opt.adId + ' ' + this.opt.placeholder)[0];
-            this.getLikedAds(function (likedAds) {
-                var liked = false, i, len; 
-                for (i = 0, len = likedAds.length ; i < len ; i += 1) {
-                    if(self.opt.adId === likedAds[i]){
-                        liked = true;
-                        break;
-                    }
-                }
-                if (!liked) {
-                    var request = new JebeApi.RestRequests(self.opt.adId, '', '');
-                    request.add(JebeApi.ActionRequest.getAdLikeCount({creativeID : self.opt.adId}, 'result', false));
-                    request.send(function(response){
-                        var count = parseInt(eval('{'+ response.responseText +'}')[0].result, 10);
-                        if (count) {
-                            self.stat.innerHTML = (count > 5 ? count : 5) + '人';
-                        }
-                    }, function(){});
-                }
-                self.opt.placeholder.innerHTML = '<div class="jebe-like"><a class="like-ad" href="#">'+(liked?'已经喜欢':'喜欢')+'</a><span></span></div>';
-                self.btn = $('a', self.opt.placeholder)[0];
-                self.stat = $('span', self.opt.placeholder)[0];
-                self.btn.onclick = function (e) {self.onClick(e);};
-                self.btn.onmouseover = function (e) {self.onMouseover(e);};
-                self.btn.onmouseout = function (e) {self.onMouseout(e);};
-            });
-        },
-
-        getLikedAds: function (fn) {
-            if (this.constructor.likedAds) {
-                fn(this.constructor.likedAds);
-            }
-            else {
-                var request = new JebeApi.RestRequests('', '', ''), self = this;
-                request.add(JebeApi.ActionRequest.getLikedAds({
-                        userID : '109224573'||XN.cookie.get('id')
-                    }, 'adlist', false));
-                request.send(function (response) {
-                    self.constructor.likedAds = eval('{'+ response.responseText +'}')[0].adlist.split(',');
-                    fn(self.constructor.likedAds);
-                }, function () {});
-            }
-        },
-
-        onMouseover: function () {
-            if (this.btn.innerHTML === "已经喜欢") {
-                this.btn.innerHTML = "取消喜欢";
-            }
-        },
-
-        onMouseout: function () {
-            if (this.btn.innerHTML === "取消喜欢") {
-                this.btn.innerHTML = '已经喜欢';
-            }
-        },
-
-        onClick: function () {
-            var likeText = this.btn.innerHTML;
-            var logTag = '';
-            var self = this;
-            if(likeText === "取消喜欢") {
-                logTag = 'unlikeAd';
-            }
-            else if(likeText === "喜欢") {
-                logTag = 'likeAd';
-            }
-            //sendRestLog(logTag,adparam.click_url,adparam.creative_id,adparam.widgetId,adparam.widgetVersion,adparam.adzoneId);
-            if (this.btn.innerHTML === '取消喜欢') {
-                var request = new JebeApi.RestRequests(this.opt.adId, '', '');
-                request.add(JebeApi.ActionRequest.getAdLikeCount({creativeID : this.opt.adId}, 'result', false));
-                request.add(JebeApi.ActionRequest.unLikeAd({creativeID : this.opt.adId, clickUrl : this.opt.adparam.click_url, absPos : this.opt.adparam.click_url}, 'result', false));
-                request.send(
-                    function(response){
-                        var count = parseInt(eval('{'+ response.responseText +'}')[0].result, 10);
-                        if (count) {
-                            self.stat.innerHTML = (count > 5 ? count : 5) + '人';
-                        }
-                        for(var i = 0, len = self.constructor.likedAds.length ; i < len ; i += 1) {
-                            if(self.opt.adId === self.constructor.likedAds[i]) {
-                                self.constructor.likedAds.splice(i, 1);
-                                break;
-                            }   
-                        }
-                        self.btn.innerHTML = '喜欢';
-                    }, function(){});
-            }
-            else if (this.btn.innerHTML === '喜欢') {
-                var request = new JebeApi.RestRequests(this.opt.adId, '', '');
-                request.add(JebeApi.ActionRequest.likeAd({creativeID : this.opt.adId, clickUrl : this.opt.adparam.click_url, absPos : this.opt.adparam.click_url}, 'result', false));
-                request.send(
-                    function(response){
-                        self.constructor.likedAds.push(self.opt.adId);
-                        self.btn.innerHTML = '已经喜欢';
-                        self.stat.innerHTML = '';
-                    }, function(){});
-            }
-        }
-
-    });
-
     var JebeApi = {
 
         RestRequests: Class({
 
             init: function (adID, widgetID, widgetVersion) {
-                this.uid = '109224573';
+                this.uid = globalOptions.userId;
                 this.adID = adID;
                 this.widgetID = widgetID;
                 this.widgetVersion = widgetVersion;
@@ -589,17 +588,25 @@ JebeManager.define(function (src, undefined) {
             send : function (onSuccess, onError) {
                 var This = this;
                 if (this.requests.length > 0) {
-                    if (!onSuccess)
-                        onSuccess = function () {};
-                    if (!onError)
-                        onError = function () {};
-                    new XN.net.xmlhttp({
-                        url : "http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/execute.htm",
-                        method : 'post',
-                        data : '&content=' + encodeURIComponent(XN.JSON.build(This.requests)),
-                        onSuccess : onSuccess,
-                        onError : onError
-                    });
+                    $.ajax('post', 'http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/execute.htm', '&content=' + this.toString(this.requests), onSuccess, onError);
+                }
+            },
+
+            toString: function (obj) {
+                if (obj.push) {
+                    var tmp = [];
+                    for (var i = 0 ; i < obj.length ; i++ ) {
+                        tmp.push(this.toString(obj[i]));
+                    }
+                    return '[' + tmp.join(',') + ']';
+                }
+                else {
+                    var tmp = [];
+                    for (var key in obj) {
+                        tmp.push('"' + key + '":' + obj[key]);
+                    }
+                    tmp = tmp.join(',');
+                    return '{' + tmp + '}';
                 }
             }
         }),
@@ -665,6 +672,111 @@ JebeManager.define(function (src, undefined) {
         })()
 
     }; 
+
+    var Like = Class({
+
+        init: function (opt) {
+            var self = this;
+            this.opt = opt;
+            this.opt.placeholder = $('#ad' + this.opt.adId + ' ' + this.opt.placeholder)[0];
+            this.getLikedAds(function (likedAds) {
+                var liked = false, i, len; 
+                for (i = 0, len = likedAds.length ; i < len ; i += 1) {
+                    if(self.opt.adId === likedAds[i]){
+                        liked = true;
+                        break;
+                    }
+                }
+                if (!liked) {
+                    var request = new JebeApi.RestRequests(self.opt.adId, '', '');
+                    request.add(JebeApi.ActionRequest.getAdLikeCount({creativeID : self.opt.adId}, 'result', false));
+                    request.send(function(response){
+                        var count = parseInt(eval('{'+ response.responseText +'}')[0].result, 10);
+                        if (count) {
+                            self.stat.innerHTML = (count > 5 ? count : 5) + '人';
+                        }
+                    }, function(){});
+                }
+                self.opt.placeholder.innerHTML = '<div class="jebe-like"><a class="like-ad" href="#">'+(liked?'已经喜欢':'喜欢')+'</a><span></span></div>';
+                self.btn = $('a', self.opt.placeholder)[0];
+                self.stat = $('span', self.opt.placeholder)[0];
+                self.btn.onclick = function (e) {self.onClick(e);};
+                self.btn.onmouseover = function (e) {self.onMouseover(e);};
+                self.btn.onmouseout = function (e) {self.onMouseout(e);};
+            });
+        },
+
+        getLikedAds: function (fn) {
+            if (this.constructor.likedAds) {
+                fn(this.constructor.likedAds);
+            }
+            else {
+                var request = new JebeApi.RestRequests('', '', ''), self = this;
+                request.add(JebeApi.ActionRequest.getLikedAds({
+                        userID : globalOptions.userId
+                    }, 'adlist', false));
+                request.send(function (response) {
+                    self.constructor.likedAds = eval('{'+ response.responseText +'}')[0].adlist.split(',');
+                    fn(self.constructor.likedAds);
+                }, function () {});
+            }
+        },
+
+        onMouseover: function () {
+            if (this.btn.innerHTML === "已经喜欢") {
+                this.btn.innerHTML = "取消喜欢";
+            }
+        },
+
+        onMouseout: function () {
+            if (this.btn.innerHTML === "取消喜欢") {
+                this.btn.innerHTML = '已经喜欢';
+            }
+        },
+
+        onClick: function () {
+            var likeText = this.btn.innerHTML;
+            var logTag = '';
+            var self = this;
+            if(likeText === "取消喜欢") {
+                logTag = 'unlikeAd';
+            }
+            else if(likeText === "喜欢") {
+                logTag = 'likeAd';
+            }
+            //sendRestLog(logTag,adparam.click_url,adparam.creative_id,adparam.widgetId,adparam.widgetVersion,adparam.adzoneId);
+            if (this.btn.innerHTML === '取消喜欢') {
+                var request = new JebeApi.RestRequests(this.opt.adId, '', '');
+                request.add(JebeApi.ActionRequest.getAdLikeCount({creativeID : this.opt.adId}, 'result', false));
+                request.add(JebeApi.ActionRequest.unLikeAd({creativeID : this.opt.adId, clickUrl : this.opt.adparam.click_url, absPos : this.opt.adparam.click_url}, 'result', false));
+                request.send(
+                    function(response){
+                        var count = parseInt(eval('{'+ response.responseText +'}')[0].result, 10);
+                        if (count) {
+                            self.stat.innerHTML = (count > 5 ? count : 5) + '人';
+                        }
+                        for(var i = 0, len = self.constructor.likedAds.length ; i < len ; i += 1) {
+                            if(self.opt.adId === self.constructor.likedAds[i]) {
+                                self.constructor.likedAds.splice(i, 1);
+                                break;
+                            }   
+                        }
+                        self.btn.innerHTML = '喜欢';
+                    }, function(){});
+            }
+            else if (this.btn.innerHTML === '喜欢') {
+                var request = new JebeApi.RestRequests(this.opt.adId, '', '');
+                request.add(JebeApi.ActionRequest.likeAd({creativeID : this.opt.adId, clickUrl : this.opt.adparam.click_url, absPos : this.opt.adparam.click_url}, 'result', false));
+                request.send(
+                    function(response){
+                        self.constructor.likedAds.push(self.opt.adId);
+                        self.btn.innerHTML = '已经喜欢';
+                        self.stat.innerHTML = '';
+                    }, function(){});
+            }
+        }
+
+    });
 
     var Close = Class({
 
@@ -732,7 +844,7 @@ JebeManager.define(function (src, undefined) {
             //记录关闭广告日志
             //sendRestLog("closeAd",adparam.click_url,adparam.creative_id,adparam.widgetId,adparam.widgetVersion,adparam.adzoneId,'closeReason',encodeURIComponent(reasonClose));
             
-            XN.net.sendStats('http://ebp.renren.com/ebpn/close.html?cid=' + this.opt.adparam.creative_id);    //使用XN.net.sendStats()方法向引擎发送关闭请求
+            $.ajax('get','http://ebp.renren.com/ebpn/close.html?cid=' + this.opt.adparam.creative_id);    //向引擎发送关闭请求
             var request = new JebeApi.RestRequests('adparam.creative_id', '', ''); 
             request.add(JebeApi.ActionRequest.blockAd({creativeID : this.opt.adId, absPos : this.opt.adparam.click_url, clickUrl : this.opt.adparam.click_url, blockReason : encodeURIComponent(reasonClose)}, 'result', false));
             request.send(function(response){response = eval('{'+ response.responseText +'}');}, function(){});
@@ -761,8 +873,6 @@ JebeManager.define(function (src, undefined) {
             param += '&' + customName + '=' + customValue;
         }
         
-        console.log("sendRestLog,param=" + param);
-        
         new XN.net.xmlhttp({
             url: "http://rest.widgetbox.jebe.renren.com/widgetboxs/rest/widget",
             method: 'post',
@@ -782,6 +892,6 @@ JebeManager.define(function (src, undefined) {
         }
     };
 
-    return new JebeLoader(src);
+    return new JebeLoader(globalOptions.ebpSrc);
 
 });
