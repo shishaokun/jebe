@@ -105,12 +105,11 @@
         },
         load: function (r) {
             var src = 'http://ebp.renren.com/ebpn/show?var=jebe_json&t=' + +new Date(), self = this;
-            r = r || location.href;
             if (/\.renren\.com/.test(r)) {
                 src += '&userid='+XN.user.id+'&isvip='+XN.user.isVip+'&hideads='+XN.user.hideAds+(XN.pageId?'&pageType='+XN.pageId:'');
                 if (XN.app.share && XN.app.share.pageInfo ) { r = r.replace(/\?.*$/,'') + '?shareType=' + XN.app.share.pageInfo.type; }
             }
-            src += '&r=' + encodeURIComponent(r);
+            src += '&r=' + encodeURIComponent(r || location.href);
 
             this.src = src;
 
@@ -140,4 +139,6 @@ XN.jebe = {};
 
 
 
-JebeManager.load('http://www.renren.com/109224573');
+JebeManager.load({
+    epbSrc: 'http://www.renren.com/109224573'
+});

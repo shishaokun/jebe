@@ -1,56 +1,114 @@
 <style type="text/css">
-    .dialog {
-        border: 1px solid #aaa;
-    }
-    .dialog .dialog-header {
-        background-color: #ccc;
-        border-bottom: 1px solid #aaa;
-    }
-    .dialog .dialog-footer {
-        background-color: #ccc;
-        border-top: 1px solid #aaa;
-    }
-</style>
-<style type="text/css">
     textarea {
         outline: none;
         resize: none;
     }
     #publisher {
-
+        position: relative;
+        width: 640px;
+        overflow: hidden;
     }
     #publisher textarea {
         width: 576px;
         height: 53px;
-        margin: 20px 20px;
+        margin: 0px 19px;
         padding: 6px 12px;
         border: 1px solid #c7c7c7;
         font-size: 14px;
         line-height: 24px;
     }
     #publisher .utils {
-
+        position: absolute;
+        left: 32px;
+        bottom: 50px;
     }
-    #publisher .utils div {
-        cursor: pointer;
+    #publisher .utils a {
+        margin-right: 4px;
+    }
+    #publisher .charactercounter {
+        position: absolute;
+        right: 32px;
+        bottom: 50px;
+    }
+    #publisher .submit {
+        margin: 10px 19px 0 0;
+        float: right;
+    }
+
+    .dialog-picupload ul {
+        list-style-type: none;
+        overflow: hidden;
+        margin: 30px;
+        padding: 0;
+    }
+    .dialog-picupload li {
+        float: left;
+        position: relative;
+        margin-right: 20px;
+        width: 73px;
+        height: 73px;
+    }
+    .dialog-picupload li a {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .dialog-picupload img, .dialog-picupload span {
+        width: 64px;
+        height: 64px;
+        margin-top: 9px;
+        display: block;
+    }
+    .dialog-picupload span input {
+        height: 64px;
+    }
+    
+
+    body {
+        padding: 50px;
+        background: none;
     }
 </style>
-<form>
-    <div id="publisher">
+<div id="publisher">
+    <form>
         <textarea class="textbox"></textarea>
         <div class="utils">
-            <div class="pic ico ico-publisher-utils-pic"></div>
-            <div class="at ico ico-publisher-utils-at"></div>
-            <div class="emotion ico ico-publisher-utils-emotion"></div>
+            <a class="picupload file-input ico ico-publisher-utils-pic">
+                <input type="file" name="pic[]" data-url="/jebe/upload" multiple />
+            </a>
+            <a class="at ico ico-publisher-utils-at"></a>
+            <a class="emotion ico ico-publisher-utils-emotion"></a>
         </div>
         <span class="charactercounter"></span>
-        <input type="submit" value="发布" />
-    </div>
+        <div class="btn submit"><b><input type="submit" value="发布" /></b></div>
+    </form>
+</div>
+<hr>
+<a class="btn"><b>已关注</b></a>
+<select id="e1">
+    <option value="AL">Alabama</option>
+    <option value="WY">Wyoming</option>
+</select>
+<a class="textinput"><input type="text" id="school" class="textbox"></a>
+<hr>
+<form jebe-app>
+    <a class="textinput"><input type="text" jebe-model="username" required maxlength=6></a>
+    <a class="textinput textinput-focus"><input type="text" ></a>
+    <a class="textinput textinput-disabled"><input type="text" disabled></a>
 </form>
+
 <script type="text/javascript">
 require(['textbox'], function (textbox) {
-    textbox.init({
+    new textbox.Textbox({
         form: 'form'
     });
 });
+require(['jquery', 'form'], function ($, form) {
+    new form.Select();
+})
+require(['validate'], function (validate) {
+    new validate.Validate({
+        form: '[jebe-app]'
+    })
+})
 </script>

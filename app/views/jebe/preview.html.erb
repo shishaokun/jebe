@@ -1,9 +1,6 @@
-<style type="text/css">
-    
-</style>
-<link href="http://s.xnimg.cn/a51059/n/core/home-frame2-all-min.css" rel="stylesheet" type="text/css" />
+<link href="http://s.xnimg.cn/n/core/home-frame2-all-min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://s.xnimg.cn/n/core/base-all2.js"></script>
 <div id="ad0" class="jebe-adzone" controls></div>
-<script type="text/javascript" src="/assets/base-all2.js"></script>
 <script type="text/javascript">
 document.domain = 'renren.com';
 (function () {
@@ -51,14 +48,14 @@ document.domain = 'renren.com';
     };
 
     JebeManager.define = function (fn) {
-       	fn();
+       	fn({}, true);
     }
 
     window.JebeManager = JebeManager;
 
-    window.send = function (data) {
+    window.send = function (template, templateData) {
         if (JebeManager.Jebe) {
-    	   new JebeManager.Jebe(data).render([{adzone_id: '0', html: window.name, js:'var init = function(){}'}]);
+    	   new JebeManager.Jebe(templateData).render(template);
         }
     };
 
